@@ -24,11 +24,11 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   font-size: 20px;
 }
 
-.mat-sidenav {
+/* .mat-sidenav {
   width: 10%;
-  background-color: rgba(0, 0, 139, 0.329);
+  background-color: #3F51B5;
 }
-
+ */
 .mat-sidenav-content {
   width: 90%;
 }
@@ -37,3 +37,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   height: 100%;
 }
 
+/* body{
+  overflow: hidden;
+}
+ */
