@@ -1,3 +1,52 @@
-<mat-card>
-  <p>verb-to-be works!</p>
+<mat-card class="card-exercises">
+  <div class="card-grid">
+
+      <mat-vertical-stepper [linear]="false" #stepper [animationDuration]="duration">
+        <ng-template ngFor let-exercise [ngForOf]="exercises">
+          <mat-step [stepControl]="firstFormGroup">
+            <form [formGroup]="firstFormGroup">
+              <ng-template matStepLabel>{{ exercise.title }}</ng-template>
+              <span>{{ exercise.sentence }}</span>
+                <ul>
+                  <li *ngFor="let answer of exercise.answers">
+                    <mat-checkbox>
+                      {{ answer }}
+                    </mat-checkbox>
+                  </li>
+                </ul>
+              <div>
+                <button mat-button matStepperNext>Next</button>
+              </div>
+            </form>
+          </mat-step>
+      </ng-template>
+      <mat-step>
+        <ng-template matStepLabel>Done</ng-template>
+        Confirm Answers
+        <div>
+          <button mat-button matStepperPrevious>Back</button>
+          <button mat-button (click)="stepper.reset()">Reset</button>
+        </div>
+      </mat-step>
+      </mat-vertical-stepper>
+
+      <!-- <mat-card class="example-card">
+        <mat-card-header>
+          <div mat-card-avatar class="example-header-image"></div>
+          <mat-card-title>{{ exercise.title }}</mat-card-title>
+          <mat-card-subtitle>{{ exercise.chapter }}</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <p>
+            {{ exercise.sentence }}
+          </p>
+        </mat-card-content>
+        <mat-card-actions>
+          <button mat-button>LIKE</button>
+          <button mat-button>SHARE</button>
+        </mat-card-actions>
+      </mat-card> -->
+
+
+  </div>
 </mat-card>

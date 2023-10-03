@@ -1,0 +1,32 @@
+.example-card {
+  height: 400px;
+  width: 350px;
+  border-radius: 10px;
+  border: thin solid rgba(0, 0, 0, 0.295);
+  margin: 1em 1em 1em 1em;
+  padding: 0.5em;
+  box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.2);
+}
+
+.example-header-image {
+  background-image: url('https://material.angular.io/assets/img/examples/shiba1.jpg');
+  background-size: cover;
+}
+
+.card-grid {
+  display: flex;
+  flex-wrap: wrap;
+  margin-left: 1.5em;
+  margin-right: 1em;
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+.example-input-wrapper {
+  margin-bottom: 16px;
+}
+
+ul {
+  list-style-type: none;
+  margin-top: 4px;
+}

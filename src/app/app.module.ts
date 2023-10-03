@@ -1,3 +1,4 @@
+import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -7,24 +8,26 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatStepperModule } from '@angular/material/stepper';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTreeModule } from '@angular/material/tree';
 import { BrowserModule } from '@angular/platform-browser';
-
-
-
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatInputModule } from '@angular/material/input';
+
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ContentComponent } from './content/content.component';
-import { MainComponent } from './content/main/main.component';
-import { SideMenuComponent } from './content/side-menu/side-menu.component';
-import { HeaderComponent } from './header/header.component';
-
 import { AboutComponent } from './content/main/about/about.component';
 import { ExercisesComponent } from './content/main/exercises/exercises.component';
 import { VerbToBeComponent } from './content/main/exercises/verb-to-be/verb-to-be.component';
 import { MainPageComponent } from './content/main/main-page/main-page.component';
+import { MainComponent } from './content/main/main.component';
+import { SideMenuComponent } from './content/side-menu/side-menu.component';
+import { HeaderComponent } from './header/header.component';
+
 
 
 
@@ -53,7 +56,13 @@ import { MainPageComponent } from './content/main/main-page/main-page.component'
     MatCardModule,
     MatGridListModule,
     MatCheckboxModule,
-    MatDividerModule
+    MatDividerModule,
+    HttpClientModule,
+    MatStepperModule,
+    MatFormFieldModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatInputModule
   ],
   providers: [],
   bootstrap: [AppComponent]

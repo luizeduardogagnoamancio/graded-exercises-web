@@ -4,4 +4,5 @@ export class Exercise {
   title?: string;
   sentence?: string;
   answers?: Array<string>;
+  chapter?: string;
 }
