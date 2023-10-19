@@ -3,19 +3,23 @@
 
       <mat-vertical-stepper [linear]="false" #stepper [animationDuration]="duration">
         <ng-template ngFor let-exercise [ngForOf]="exercises">
-          <mat-step [stepControl]="firstFormGroup">
+          <mat-step [stepControl]="firstFormGroup" [editable]="isEditable">
             <form [formGroup]="firstFormGroup">
               <ng-template matStepLabel>{{ exercise.title }}</ng-template>
               <span>{{ exercise.sentence }}</span>
                 <ul>
-                  <li *ngFor="let answer of exercise.answers">
-                    <mat-checkbox>
+                  <mat-radio-group *ngIf="!checked" [(ngModel)]="selectedAnswer" [ngModelOptions]="{standalone: true}">
+                    <mat-radio-button *ngFor="let answer of exercise.answers" [value]="answer">
                       {{ answer }}
-                    </mat-checkbox>
-                  </li>
+                    </mat-radio-button>
+                  </mat-radio-group>
+                  <mat-radio-group *ngIf="checked">
+                    <span *ngIf="checkAnswer(selectedAnswer, exercise.cAnswer)">Your answer is correct! {{ exercise.cAnswer }}</span>
+                    <span>Your answer is incorrect! The correct answer is {{ exercise.cAnswer }}</span>
+                  </mat-radio-group>
                 </ul>
               <div>
-                <button mat-button matStepperNext>Next</button>
+                <button mat-button matStepperNext (click)="checkAnswer(selectedAnswer, exercise.cAnswer)">Next</button>
               </div>
             </form>
           </mat-step>
@@ -25,7 +29,8 @@
         Confirm Answers
         <div>
           <button mat-button matStepperPrevious>Back</button>
-          <button mat-button (click)="stepper.reset()">Reset</button>
+          <button mat-button (click)="resetStepper()">Reset</button>
+          <button mat-button (click)="checkAll()">Done</button>
         </div>
       </mat-step>
       </mat-vertical-stepper>
