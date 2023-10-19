@@ -14,12 +14,12 @@
                     </mat-radio-button>
                   </mat-radio-group>
                   <mat-radio-group *ngIf="checked">
-                    <span *ngIf="checkAnswer(selectedAnswer, exercise.cAnswer)">Your answer is correct! {{ exercise.cAnswer }}</span>
-                    <span>Your answer is incorrect! The correct answer is {{ exercise.cAnswer }}</span>
+                    <span *ngIf="checkAnswer(selectedAnswer, exercise.canswer)">Your answer is correct! {{ exercise.canswer }}</span>
+                    <span>Your answer is incorrect! The correct answer is {{ exercise.canswer }}</span>
                   </mat-radio-group>
                 </ul>
               <div>
-                <button mat-button matStepperNext (click)="checkAnswer(selectedAnswer, exercise.cAnswer)">Next</button>
+                <button mat-button matStepperNext (click)="checkAnswer(selectedAnswer, exercise.canswer)">Next</button>
               </div>
             </form>
           </mat-step>

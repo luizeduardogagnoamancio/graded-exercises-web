@@ -28,6 +28,7 @@ import { MainPageComponent } from './content/main/main-page/main-page.component'
 import { MainComponent } from './content/main/main.component';
 import { SideMenuComponent } from './content/side-menu/side-menu.component';
 import { HeaderComponent } from './header/header.component';
+import { VerbToBeTypeCardComponent } from './content/main/exercises/verb-to-be-type-card/verb-to-be-type-card.component';
 
 
 
@@ -43,6 +44,7 @@ import { HeaderComponent } from './header/header.component';
     AboutComponent,
     MainPageComponent,
     VerbToBeComponent,
+    VerbToBeTypeCardComponent,
    ],
   imports: [
     BrowserModule,

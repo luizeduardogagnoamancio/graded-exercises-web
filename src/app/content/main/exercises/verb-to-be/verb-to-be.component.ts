@@ -23,8 +23,8 @@ export class VerbToBeComponent implements OnInit{
   secondFormGroup: FormGroup = this._formBuilder.group({secondCtrl: ['', Validators.required]});
 
   ngOnInit(): void {
-      /* this.getExercicios(); */
-      this.montaExercicioSoFront();
+      this.getExercicios();
+      //this.montaExercicioSoFront(); TESTE SÓ COM O FRONT
   }
 
   constructor(private exerciseService: ExercisesServiceTsService, private _formBuilder: FormBuilder) {
@@ -40,13 +40,14 @@ export class VerbToBeComponent implements OnInit{
     });
   }
 
-  montaExercicioSoFront():void {
+  //TESTES SÓ NO FRONT
+ /*  montaExercicioSoFront():void {
     this.exercises = [
       { _id: "1", number: "1", title: "Teste", sentence: "teste", answers: ["to be", "will", "are", "together"], cAnswer: "to be", chapter: "2"},
       { _id: "1", number: "1", title: "Teste", sentence: "teste", answers: ["to be", "will", "are", "together"], cAnswer: "to be", chapter: "2"},
       { _id: "1", number: "1", title: "Teste", sentence: "teste", answers: ["to be", "will", "are", "together"], cAnswer: "to be", chapter: "2"}
   ];
-  }
+  } */
 
   checkAnswer(answer:string, cAnswer:string|undefined):boolean {
     return answer == cAnswer? true : false;
@@ -66,6 +67,7 @@ export class VerbToBeComponent implements OnInit{
       this.stepper.reset();
       this.hasBeenReset = true;
       this.checked = false;
+      this.stepper.selectedIndex = 0;
     }
   }
 }
