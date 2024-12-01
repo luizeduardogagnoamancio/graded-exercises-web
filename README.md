@@ -1,1 +1,1 @@
-# gradex-exercises-web
+# graded-exercises-web
