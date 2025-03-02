@@ -1,0 +1,23 @@
+.container-home {
+  display: flex;
+  flex-direction: column;
+}
+
+.painel-superior {
+  height: 3.75rem;
+}
+
+.painel-lateral {
+  width: 17rem;
+}
+
+.conteudo {
+  display: flex;
+  height: 100vh;
+}
+
+.conteudo-central {
+  flex-grow: 1;
+  padding: 20px;
+  background-color: #f4f4f4;
+}
