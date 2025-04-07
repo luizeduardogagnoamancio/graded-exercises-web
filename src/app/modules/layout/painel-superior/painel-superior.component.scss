@@ -1,0 +1,7 @@
+@use '../../../../assets/styles/variaveis.scss' as *;
+
+.conteiner {
+  background-color: $fundo-painel-superior;
+  height: 100%;
+  color: white;
+}
