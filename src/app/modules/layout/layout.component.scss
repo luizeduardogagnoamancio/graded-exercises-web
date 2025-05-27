@@ -6,26 +6,13 @@
 }
 
 .painel-superior {
-  height: 3.75rem;
-}
-
-.painel-lateral {
-  background-color: $fundo-painel-lateral;
-  width: 17rem;
+  height: 7.75vh;
 }
 
 .painel-central {
-  width: 71rem;
-  height: 95%;
+  width: 71vw;
+  height: 92vh;
   padding: 2em 1em 2em 2em;
-}
-
-.painel-lateral-direito {
-  display: flex;
-  flex-direction: column;
-  height: 95%;
-  width: 25%;
-  padding: 2em 0.5em 2em 1em;
 }
 
 .conteudo {
@@ -37,6 +24,5 @@
   display: flex;
   flex-direction: row;
   justify-content: space-evenly;
-  flex-grow: 1;
   background-color: $fundo-pagina;
 }
