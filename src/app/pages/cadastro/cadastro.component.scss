@@ -1,16 +1,113 @@
-body {
-  height: 100%;
-}
+@use '../../../assets/styles/variaveis.scss' as vars;
 
-.conteiner {
+:host {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 10vh;
+  min-height: calc(100vh - 7.75vh - 4em);
+  background-color: vars.$fundo-pagina;
+  padding: 2em;
 }
 
-.box-cadastro {
-  background-color: red;
-  height: 1em;
-  width: 1em;
+.cadastro-container {
+  width: 100%;
+  max-width: 450px;
+}
+
+.form-card {
+  background-color: vars.$fundo-branco;
+  border-radius: 16px;
+  padding: 1em;
+  .card-title {
+    font-size: 1.8em;
+    font-weight: bold;
+    color: vars.$fonte-principal;
+    text-align: left;
+    margin-bottom: 1.5em;
+  }
+}
+
+.field {
+  margin-bottom: 1.5rem;
+
+  label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: vars.$fonte-secundaria;
+    font-size: 0.9em;
+  }
+
+  input[pInputText],
+  :host ::ng-deep .p-password input {
+    background-color: #f3f4f6;
+    border-radius: 10px;
+    border: none;
+    padding: 1em;
+    color: vars.$fonte-principal;
+  }
+
+  :host ::ng-deep .p-password .p-inputtext {
+    width: 100%;
+  }
+}
+
+.field-checkbox {
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+
+  label {
+    margin-left: 0.5rem;
+    color: vars.$fonte-secundaria;
+  }
+}
+
+// Ajustes para o botão de registro
+:host ::ng-deep .p-button {
+  background-color: #4a7b9d;
+  border: none;
+  border-radius: 25px;
+  padding: 0.8em 1em;
+  font-size: 1.1em;
+
+  &:hover {
+    background-color: darken(#4a7b9d, 5%);
+  }
+}
+
+.p-error {
+  font-size: 0.8em;
+  display: block;
+  margin-top: 0.25rem;
+}
+
+.mt-1 {
+  margin-top: 0.25rem;
+}
+
+.ml-2 {
+  margin-left: 0.5rem;
+}
+
+.w-full {
+  width: 100%;
+}
+
+// Ajustes para PrimeNG
+:host ::ng-deep .p-checkbox .p-checkbox-box {
+  border-radius: 4px;
+}
+
+// Responsividade básica para o card
+@media (max-width: 600px) {
+  .cadastro-container {
+    padding: 1em;
+  }
+  .form-card {
+    padding: 1em;
+    .card-title {
+      font-size: 1.5em;
+    }
+  }
 }
