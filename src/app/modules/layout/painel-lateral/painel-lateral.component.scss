@@ -5,6 +5,11 @@
   display: flex;
   flex-direction: column;
   height: 100%;
+  width: 18vw;
+  min-width: 200px;
+  padding: 0.5em;
+  box-sizing: border-box;
+  transition: width 0.3s ease;
 }
 
 .botao {
@@ -33,4 +38,15 @@
 
 .icone-botao {
   margin: 0 0.25em 0 0.5em;
+}
+
+@media (max-width: 768px) {
+  .conteiner {
+    width: 100%;
+  }
+  .botao {
+    justify-content: center;
+    padding: 0.8em;
+    font-size: 18px;
+  }
 }

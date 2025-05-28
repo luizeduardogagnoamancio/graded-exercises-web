@@ -1,11 +1,21 @@
 <div class="container-home">
   <div class="painel-superior">
-    <painel-superior></painel-superior>
+    <painel-superior (toggleMenuLateral)="toggleMenu()"></painel-superior>
   </div>
   <div class="conteudo">
-    <div class="painel-lateral">
-      <painel-lateral></painel-lateral>
-    </div>
+    <div
+      class="painel-lateral-wrapper"
+      [class.menu-aberto]="isMenuLateralAberto"
+      [class.escondido-desktop]="!isTelaPequena && !isMenuLateralAberto"
+      [class.escondido-mobile]="isTelaPequena && !isMenuLateralAberto"
+    >
+      <painel-lateral (click)="isTelaPequena && toggleMenu()"></painel-lateral>
+      </div>
+    <div
+      class="overlay-menu"
+      *ngIf="isMenuLateralAberto && isTelaPequena"
+      (click)="toggleMenu()"
+    ></div>
     <div class="conteudo-central">
       <painel-central></painel-central>
     </div>

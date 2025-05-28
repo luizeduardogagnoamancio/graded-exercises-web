@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 
 @Component({
   selector: 'painel-superior',
@@ -6,6 +6,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./painel-superior.component.scss']
 })
 export class PainelSuperiorComponent implements OnInit {
+  @Output() toggleMenuLateral = new EventEmitter<void>();
 
   constructor() { }
 

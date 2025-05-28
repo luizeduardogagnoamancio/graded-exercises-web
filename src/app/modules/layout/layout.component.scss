@@ -3,6 +3,7 @@
 .container-home {
   display: flex;
   flex-direction: column;
+  min-height: 100vh;
 }
 
 .painel-superior {
@@ -15,14 +16,112 @@
   padding: 2em 1em 2em 2em;
 }
 
+.painel-lateral {
+  flex-shrink: 0;
+  height: 100%;
+}
+
 .conteudo {
   display: flex;
-  height: 100vh;
+  flex-grow: 1;
 }
 
 .conteudo-central {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-evenly;
+  flex-grow: 1;
+  padding: 2em 1em 2em 2em;
   background-color: $fundo-pagina;
+  overflow-y: auto;
+}
+
+// ---- Media Queries para Responsividade ----
+
+// Exemplo: Telas Médias (Tablets, Laptops menores)
+@media (max-width: 1024px) {
+  .painel-central {
+    padding: 1.5em;
+  }
+}
+
+// Exemplo: Telas Pequenas (Smartphones)
+@media (max-width: 768px) {
+  .conteudo {
+    flex-direction: column;
+  }
+
+  .painel-lateral {
+    width: 100%;
+    height: auto;
+  }
+
+  .painel-central {
+    width: 100%;
+    padding: 1em;
+  }
+
+  .painel-lateral-wrapper {
+    flex-shrink: 0;
+    height: 100%;
+    transition: transform 0.3s ease-in-out, width 0.3s ease-in-out;
+    position: relative;
+    z-index: 100;
+  }
+
+  .overlay-menu {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+  }
+
+  @media (max-width: 768px) {
+    .conteudo {
+      position: relative;
+    }
+
+    .painel-lateral-wrapper {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh;
+      width: 250px;
+      background-color: $fundo-painel-lateral;
+      transform: translateX(-100%);
+      transition: transform 0.3s ease-in-out;
+      z-index: 1000;
+      overflow-y: auto;
+
+      &.menu-aberto {
+        transform: translateX(0);
+      }
+    }
+
+
+
+    .overlay-menu {
+      &.menu-aberto-mobile {
+        display: block;
+      }
+    }
+
+
+    .conteudo-central {
+      width: 100%;
+    }
+  }
+
+  @media (min-width: 769px) {
+    .painel-lateral-wrapper {
+      position: static;
+      transform: translateX(0);
+    }
+
+    .overlay-menu {
+      display: none;
+    }
+  }
+
 }
