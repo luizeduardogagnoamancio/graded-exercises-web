@@ -1,19 +1,17 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms'; // Adicionado FormBuilder, FormGroup, Validators, etc.
-import { HttpClient } from '@angular/common/http'; // Adicionado HttpClient
-import { CommonModule } from '@angular/common'; // Para diretivas como *ngIf, ngClass
-import { ReactiveFormsModule } from '@angular/forms'; // Para formulários reativos
+import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
+import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule } from '@angular/forms';
 
-// PrimeNG Modules
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { CheckboxModule } from 'primeng/checkbox';
 import { ButtonModule } from 'primeng/button';
-import { CardModule } from 'primeng/card'; // Para um visual de card
-import { ToastModule } from 'primeng/toast'; // Para feedback ao usuário
-import { MessageService } from 'primeng/api'; // Para o Toast
+import { CardModule } from 'primeng/card';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
 
-// Validador customizado para senhas
 export function passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
   const password = control.get('password');
   const confirmPassword = control.get('confirmPassword');
@@ -28,7 +26,7 @@ export function passwordMatchValidator(control: AbstractControl): ValidationErro
   selector: 'app-cadastro',
   templateUrl: './cadastro.component.html',
   styleUrls: ['./cadastro.component.scss'],
-  standalone: true, // Se for standalone, importe os módulos aqui
+  standalone: true,
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -39,7 +37,7 @@ export function passwordMatchValidator(control: AbstractControl): ValidationErro
     CardModule,
     ToastModule
   ],
-  providers: [MessageService] // Adicionar MessageService para o Toast
+  providers: [MessageService]
 })
 export class CadastroComponent implements OnInit {
   cadastroForm!: FormGroup;
@@ -64,7 +62,6 @@ export class CadastroComponent implements OnInit {
 
   onSubmit() {
     if (this.cadastroForm.invalid) {
-      // Marcar todos os campos como tocados para exibir erros
       Object.values(this.cadastroForm.controls).forEach(control => {
         control.markAsTouched();
       });
@@ -76,13 +73,11 @@ export class CadastroComponent implements OnInit {
     const { email, password, acceptTerms } = this.cadastroForm.value;
     const userData = { email, password, acceptTerms };
 
-    // Substitua '/api/auth/register' pelo seu endpoint real de backend
     this.http.post('/api/auth/register', userData).subscribe({
       next: (response) => {
         this.loading = false;
         this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Conta criada com sucesso!' });
         this.cadastroForm.reset();
-        // Adicionar redirecionamento ou outra ação aqui
       },
       error: (error) => {
         this.loading = false;

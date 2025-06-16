@@ -1,4 +1,5 @@
-<p-toast></p-toast> <div class="cadastro-container">
+<p-toast></p-toast>
+<div class="cadastro-container">
   <p-card styleClass="form-card">
     <ng-template pTemplate="title">
       <div class="card-title">Create your account</div>
@@ -45,9 +46,11 @@
         </div>
 
         <div class="field-checkbox">
-          <p-checkbox id="acceptTerms" formControlName="acceptTerms" binary="true"></p-checkbox>
-          <label for="acceptTerms" class="ml-2">Accept the Terms of Service</label>
-          <div *ngIf="f['acceptTerms'].touched && f['acceptTerms'].errors?.['requiredTrue']" class="p-error mt-1">
+          <div class="checkbox-label-container">
+            <p-checkbox id="acceptTerms" formControlName="acceptTerms" binary="true"></p-checkbox>
+            <label for="acceptTerms" class="ml-2">Accept the Terms of Service</label>
+          </div>
+          <div *ngIf="f['acceptTerms'].touched && f['acceptTerms'].errors?.['requiredTrue']" class="p-error">
             You must accept the terms of service.
           </div>
         </div>
