@@ -1,25 +1,38 @@
-<div class="container-home">
-  <div class="painel-superior">
-    <painel-superior (toggleMenuLateral)="toggleMenu()"></painel-superior>
-  </div>
-  <div class="conteudo">
-    <div
-      class="painel-lateral-wrapper"
-      [class.menu-aberto]="isMenuLateralAberto"
-      [class.escondido-desktop]="!isTelaPequena && !isMenuLateralAberto"
-      [class.escondido-mobile]="isTelaPequena && !isMenuLateralAberto"
-    >
-      <painel-lateral (click)="isTelaPequena && toggleMenu()"></painel-lateral>
-      </div>
-    <div
-      class="overlay-menu"
-      *ngIf="isMenuLateralAberto && isTelaPequena"
-      (click)="toggleMenu()"
-    ></div>
-    <div class="conteudo-central">
-      <painel-central></painel-central>
-    </div>
-  </div>
-</div>
+<div class="layout-container" [class.sidebar-visible]="isSidebarVisible">
 
+  <aside class="sidebar">
+    <div class="sidebar__header">
+      <h1 class="sidebar__logo">GradedEx</h1>
+    </div>
+    <nav class="sidebar__nav">
+      <a routerLink="/home" routerLinkActive="active" class="nav-item">
+        <span class="nav-icon">🏠</span>
+        <span>Home</span>
+      </a>
+      <a routerLink="/exercises" routerLinkActive="active" class="nav-item">
+        <span class="nav-icon">📄</span>
+        <span>Exercises</span>
+      </a>
+      </nav>
+  </aside>
+
+  <div class="overlay" *ngIf="isSidebarVisible" (click)="toggleSidebar()"></div>
+
+  <div class="main-area">
+    <header class="top-bar">
+      <button class="menu-toggle" (click)="toggleSidebar()">☰</button>
+      <div class="search-bar">
+        <input type="text" placeholder="Search...">
+      </div>
+      <div class="user-profile">
+        <img src="assets/fox-profile.png" alt="User Profile">
+      </div>
+    </header>
+
+    <main class="main-content">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+
+</div>
 
