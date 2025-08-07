@@ -46,8 +46,7 @@ export class RegisterComponent {
         console.log('Cadastro realizado com sucesso!', response);
         this.isLoading = false;
 
-        alert('Conta criada com sucesso! Você será redirecionado para o login.');
-        this.router.navigate(['/login']);
+        this.router.navigate(['/register-success']);
       },
       error: (err) => {
         console.error('Erro ao realizar o cadastro:', err);

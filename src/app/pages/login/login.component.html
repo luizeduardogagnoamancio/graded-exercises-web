@@ -1,0 +1,46 @@
+<div class="login-page-container">
+  <div class="login-panel">
+
+    <div class="form-section">
+      <div class="form-header">
+        <h1 class="title">Welcome back!</h1>
+      </div>
+
+      <form class="login-form" (ngSubmit)="onSubmit()">
+        <div *ngIf="errorMessage" class="error-message">
+          {{ errorMessage }}
+        </div>
+
+        <div class="form-group">
+          <label for="email">E-mail Address</label>
+          <input type="email" id="email" name="email" placeholder="Enter your email" [(ngModel)]="loginData.email" required>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" placeholder="Enter your password" [(ngModel)]="loginData.password" required>
+        </div>
+
+        <div class="form-group options">
+          <label class="checkbox-label">
+            <input type="checkbox" [(ngModel)]="rememberMe" name="rememberMe">
+            Remember me
+          </label>
+          <a href="#" class="forgot-password">Forgot password?</a>
+        </div>
+
+        <button type="submit" class="login-button" [disabled]="isLoading">
+          {{ isLoading ? 'Logging in...' : 'Login' }}
+        </button>
+
+        <div class="register-link">
+          Don't have an account? <a routerLink="/register">Register</a>
+        </div>
+      </form>
+    </div>
+
+    <div class="illustration-section">
+      <img src="assets/images/graded-ex-logo.png" alt="Person reading a book">
+    </div>
+  </div>
+</div>

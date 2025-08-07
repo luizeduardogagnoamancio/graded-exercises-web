@@ -13,19 +13,51 @@
         <span class="nav-icon">📄</span>
         <span>Exercises</span>
       </a>
-      </nav>
+    </nav>
   </aside>
 
   <div class="overlay" *ngIf="isSidebarVisible" (click)="toggleSidebar()"></div>
 
   <div class="main-area">
     <header class="top-bar">
-      <button class="menu-toggle" (click)="toggleSidebar()">☰</button>
       <div class="search-bar">
         <input type="text" placeholder="Search...">
       </div>
+
       <div class="user-profile">
-        <img src="assets/fox-profile.png" alt="User Profile">
+        <ng-container *ngIf="authService.isLoggedIn(); else notLoggedInTemplate">
+          <img src="assets/fox-profile.png" alt="User Profile" (click)="toggleProfileModal()">
+        </ng-container>
+
+        <ng-template #notLoggedInTemplate>
+          <div class="default-profile-icon" (click)="toggleProfileModal()">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+            </svg>
+          </div>
+        </ng-template>
+
+        <div class="profile-modal" *ngIf="isProfileModalVisible">
+
+          <ng-container *ngIf="authService.isLoggedIn(); else notLoggedInModalContent">
+            <div class="modal-header">
+              <img src="assets/fox-profile.png" alt="User Profile">
+              <span>luizgagnoamancio.com</span>
+            </div>
+            <div class="modal-actions">
+              <button (click)="handleLogout()">Log off</button>
+            </div>
+          </ng-container>
+
+          <ng-template #notLoggedInModalContent>
+            <div class="modal-actions">
+              <button routerLink="/login" (click)="toggleProfileModal()">Login</button>
+              <button routerLink="/register" (click)="toggleProfileModal()">Register</button>
+            </div>
+          </ng-template>
+
+        </div>
       </div>
     </header>
 
@@ -35,4 +67,3 @@
   </div>
 
 </div>
-
