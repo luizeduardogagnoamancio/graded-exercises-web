@@ -1,0 +1,74 @@
+:host {
+  display: block;
+  min-height: 100vh;
+}
+
+.success-page-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: var(--topbar-bg);
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+.success-card {
+  background-color: var(--text-color-white);
+  border-radius: 20px;
+  padding: 40px;
+  max-width: 500px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.success-icon {
+  width: 80px;
+  height: 80px;
+  background-color: #254f63;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 24px;
+
+  svg {
+    width: 48px;
+    height: 48px;
+    fill: white;
+  }
+}
+
+.success-title {
+  color: var(--text-color-dark);
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin: 0 0 12px 0;
+}
+
+.success-message {
+  color: #6c757d; // Tom de cinza para o texto secundário
+  font-size: 1.1rem;
+  margin-bottom: 24px;
+}
+
+.back-button {
+  display: inline-block;
+  background-color: var(--text-color-dark);
+  color: var(--text-color-white);
+  padding: 12px 30px;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+
+  &:hover {
+    opacity: 0.9;
+  }
+}
