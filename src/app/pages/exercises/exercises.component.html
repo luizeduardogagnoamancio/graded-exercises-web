@@ -1,0 +1,27 @@
+<div class="exercises-container">
+  <header class="page-header">
+    <h1>My Exercises</h1>
+    <p>Select a chapter to start learning and practicing.</p>
+  </header>
+
+  <div *ngIf="isLoading" class="loading-spinner">Loading...</div>
+
+  <div *ngIf="error" class="error-message">{{ error }}</div>
+
+  <div *ngIf="!isLoading && !error" class="cards-grid">
+    <div class="exercise-card" *ngFor="let exercise of exercises"
+    [routerLink]="['/exercises', exercise.id]">
+      <h3 class="card-title">{{ exercise.title }}</h3>
+      <p class="card-description">{{ exercise.description }}</p>
+      <div class="progress-bar-container">
+        <div
+          class="progress-bar-fill"
+          [style.width.%]="(exercise.currentProgress / exercise.totalLessons) * 100">
+        </div>
+      </div>
+      <span class="progress-text">
+        Lesson {{ exercise.currentProgress }} of {{ exercise.totalLessons }}
+      </span>
+    </div>
+  </div>
+</div>
