@@ -1,3 +1,4 @@
+import { UserAnswerService } from './../../services/user-answer.service';
 import { Component, OnInit } from '@angular/core';
 import { ChapterDetail } from '../../models/dto/chapter/chapter.dto';
 import { Question } from '../../models/dto/question/question.dto';
@@ -13,17 +14,14 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './exercise-page.component.scss'
 })
 export class ExercisePageComponent implements OnInit {
-  // Estado do capítulo e da questão
   chapter: ChapterDetail | null = null;
   currentQuestion: Question | null = null;
   parsedContent: any = null;
 
-  // Estado do progresso
   currentQuestionIndex = 0;
   correctAnswersCount = 0;
   isCompleted = false;
 
-  // Estado da interface
   userAnswer = '';
   feedback: 'correct' | 'incorrect' | 'none' = 'none';
   isLoading = true;
@@ -31,8 +29,9 @@ export class ExercisePageComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private exerciseService: ExerciseService
-  ) {}
+    private exerciseService: ExerciseService,
+    private userAnswerService: UserAnswerService
+  ) { }
 
   ngOnInit(): void {
     this.startExercise();
@@ -46,7 +45,11 @@ export class ExercisePageComponent implements OnInit {
       this.exerciseService.getChapterDetails(+chapterId).subscribe({
         next: (data) => {
           this.chapter = data;
-          this.restartExercise(); // Inicia ou reinicia o exercício
+          this.isCompleted = false;
+          this.currentQuestionIndex = data.startQuestionIndex;
+          this.correctAnswersCount = data.startQuestionIndex;
+
+          this.loadQuestion();
           this.isLoading = false;
         },
         error: (err) => {
@@ -64,7 +67,6 @@ export class ExercisePageComponent implements OnInit {
       this.userAnswer = '';
       this.feedback = 'none';
     } else {
-      // Chegou ao fim do exercício
       this.isCompleted = true;
       this.currentQuestion = null;
     }
@@ -77,14 +79,21 @@ export class ExercisePageComponent implements OnInit {
       this.feedback = 'correct';
       this.correctAnswersCount++;
 
-      // Aqui você chamaria um serviço para salvar o progresso no backend
+      console.log("teste")
+      console.log("current question", this.currentQuestion)
+      console.log("current question id", this.currentQuestion?.id)
+
+      this.userAnswerService.saveAnswer(this.currentQuestion ? this.currentQuestion.id : 0, true).subscribe({
+        next: () => console.log(`Progresso salvo para a questão ${this.currentQuestion?.id}`),
+        error: (err) => console.error("Falha ao salvar progresso:", err)
+      });
+
     } else {
       this.feedback = 'incorrect';
     }
   }
 
   nextQuestion(): void {
-    // Avança para a próxima questão ou finaliza o exercício
     if (this.chapter && this.currentQuestionIndex < this.chapter.questions.length) {
       this.currentQuestionIndex++;
       this.loadQuestion();
@@ -92,10 +101,27 @@ export class ExercisePageComponent implements OnInit {
   }
 
   restartExercise(): void {
-    this.currentQuestionIndex = 0;
-    this.correctAnswersCount = 0;
-    this.isCompleted = false;
-    this.loadQuestion();
+    if (!this.chapter) return;
+
+    this.isLoading = true;
+    this.userAnswerService.resetChapterProgress(this.chapter.id).subscribe({
+      next: () => {
+        console.log(`Progresso para o capítulo ${this.chapter?.id} foi resetado no backend.`);
+
+        this.currentQuestionIndex = 0;
+        this.correctAnswersCount = 0;
+        this.isCompleted = false;
+
+        this.loadQuestion();
+
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error("Falha ao resetar o progresso:", err);
+        this.error = "Não foi possível reiniciar o exercício. Tente novamente.";
+        this.isLoading = false;
+      }
+    });
   }
 
 }
