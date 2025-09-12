@@ -185,4 +185,19 @@
     background-color: var(--text-color-dark);
     color: var(--text-color-white);
   }
+
+  .show-answer-button {
+    background-color: transparent;
+    color: var(--sidebar-text);
+    border: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: underline;
+    padding: 0;
+
+    &:hover {
+      opacity: 0.8;
+    }
+  }
 }

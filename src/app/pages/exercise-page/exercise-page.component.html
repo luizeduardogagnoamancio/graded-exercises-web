@@ -2,9 +2,9 @@
   <div *ngIf="isLoading" class="loading-spinner">Loading Exercise...</div>
   <div *ngIf="error" class="error-message">{{ error }}</div>
 
-  <ng-container *ngIf="!isLoading && !error && chapter">
+  <ng-container *ngIf="!isLoading && !error && chapterDetail">
     <header class="player-header">
-      <h1>{{ chapter.title }}</h1>
+      <h1>{{ chapterDetail.title }}</h1>
     </header>
 
     <div class="question-area" *ngIf="!isCompleted && currentQuestion">
@@ -15,7 +15,7 @@
             type="text"
             class="inline-answer-input"
             [(ngModel)]="userAnswer"
-            [disabled]="feedback !== 'none'"
+            [disabled]="feedback === 'correct'"
             (keyup.enter)="feedback === 'none' ? checkAnswer() : nextQuestion()"
             autocomplete="off"
             autofocus>
@@ -25,12 +25,17 @@
 
       <div class="feedback-area" [ngClass]="feedback" *ngIf="feedback !== 'none'">
         <span *ngIf="feedback === 'correct'"><strong>Correct!</strong></span>
-        <span *ngIf="feedback === 'incorrect'"><strong>Incorrect.</strong> The correct answer is: <strong>{{ parsedContent.correctAnswer }}</strong></span>
+        <span *ngIf="feedback === 'incorrect'"><strong>Incorrect.</strong> Please try again.</span>
+        <span *ngIf="feedback === 'incorrect' && answerRevealed">The correct answer is: <strong>{{ parsedContent.correctAnswer }}</strong></span>
+
       </div>
 
       <div class="action-buttons">
-        <button class="check-button" (click)="checkAnswer()" *ngIf="feedback === 'none'">Check Answer</button>
-        <button class="next-button" (click)="nextQuestion()" *ngIf="feedback !== 'none'">Continue</button>
+        <button class="check-button" (click)="checkAnswer()" *ngIf="feedback !== 'correct'">Check Answer</button>
+
+        <button class="show-answer-button" (click)="showAnswer()" *ngIf="feedback === 'incorrect'">Show Answer</button>
+
+        <button class="next-button" (click)="nextQuestion()" *ngIf="feedback === 'correct'">Continue</button>
       </div>
     </div>
 
@@ -38,7 +43,7 @@
       <div class="completion-icon">🎉</div>
       <h2>Chapter Complete!</h2>
       <p class="summary-text">
-        You got <strong>{{ correctAnswersCount }}</strong> out of <strong>{{ chapter.questions.length }}</strong> questions right.
+        You got <strong>{{ correctAnswersCount }}</strong> out of <strong>{{ chapterDetail.questions.length }}</strong> questions right.
       </p>
       <div class="completion-actions">
         <button class="restart-button" (click)="restartExercise()">Try Again</button>

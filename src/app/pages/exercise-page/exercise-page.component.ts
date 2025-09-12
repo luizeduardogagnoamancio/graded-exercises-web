@@ -9,12 +9,13 @@ import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-exercise-page',
+  standalone: true, // Garanta que o componente é standalone
   imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './exercise-page.component.html',
   styleUrl: './exercise-page.component.scss'
 })
 export class ExercisePageComponent implements OnInit {
-  chapter: ChapterDetail | null = null;
+  chapterDetail: ChapterDetail | null = null;
   currentQuestion: Question | null = null;
   parsedContent: any = null;
 
@@ -26,6 +27,9 @@ export class ExercisePageComponent implements OnInit {
   feedback: 'correct' | 'incorrect' | 'none' = 'none';
   isLoading = true;
   error: string | null = null;
+
+  // NOVO ESTADO para controlar a revelação da resposta
+  answerRevealed = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -44,11 +48,10 @@ export class ExercisePageComponent implements OnInit {
     if (chapterId) {
       this.exerciseService.getChapterDetails(+chapterId).subscribe({
         next: (data) => {
-          this.chapter = data;
+          this.chapterDetail = data;
           this.isCompleted = false;
           this.currentQuestionIndex = data.startQuestionIndex;
           this.correctAnswersCount = data.startQuestionIndex;
-
           this.loadQuestion();
           this.isLoading = false;
         },
@@ -61,11 +64,13 @@ export class ExercisePageComponent implements OnInit {
   }
 
   loadQuestion(): void {
-    if (this.chapter && this.chapter.questions.length > this.currentQuestionIndex) {
-      this.currentQuestion = this.chapter.questions[this.currentQuestionIndex];
+    if (this.chapterDetail && this.chapterDetail.questions.length > this.currentQuestionIndex) {
+      this.currentQuestion = this.chapterDetail.questions[this.currentQuestionIndex];
       this.parsedContent = JSON.parse(this.currentQuestion.content);
+      // Reseta os estados para a nova questão
       this.userAnswer = '';
       this.feedback = 'none';
+      this.answerRevealed = false;
     } else {
       this.isCompleted = true;
       this.currentQuestion = null;
@@ -77,13 +82,9 @@ export class ExercisePageComponent implements OnInit {
 
     if (this.userAnswer.trim().toLowerCase() === this.parsedContent.correctAnswer.toLowerCase()) {
       this.feedback = 'correct';
-      this.correctAnswersCount++;
+      this.correctAnswersCount++; // Incrementa o contador de acertos
 
-      console.log("teste")
-      console.log("current question", this.currentQuestion)
-      console.log("current question id", this.currentQuestion?.id)
-
-      this.userAnswerService.saveAnswer(this.currentQuestion ? this.currentQuestion.id : 0, true).subscribe({
+      this.userAnswerService.saveAnswer(this.currentQuestion!.id, true).subscribe({
         next: () => console.log(`Progresso salvo para a questão ${this.currentQuestion?.id}`),
         error: (err) => console.error("Falha ao salvar progresso:", err)
       });
@@ -93,35 +94,29 @@ export class ExercisePageComponent implements OnInit {
     }
   }
 
+  showAnswer(): void {
+    this.answerRevealed = true;  // Ativa o estado que revela a resposta e o botão "Continue"
+    this.feedback = 'incorrect'; // Garante que a área de feedback apareça
+  }
+
   nextQuestion(): void {
-    if (this.chapter && this.currentQuestionIndex < this.chapter.questions.length) {
+    if (this.chapterDetail && this.currentQuestionIndex < this.chapterDetail.questions.length) {
       this.currentQuestionIndex++;
       this.loadQuestion();
     }
   }
 
   restartExercise(): void {
-    if (!this.chapter) return;
-
+    if (!this.chapterDetail) return;
     this.isLoading = true;
-    this.userAnswerService.resetChapterProgress(this.chapter.id).subscribe({
+    this.userAnswerService.resetChapterProgress(this.chapterDetail.id).subscribe({
       next: () => {
-        console.log(`Progresso para o capítulo ${this.chapter?.id} foi resetado no backend.`);
-
-        this.currentQuestionIndex = 0;
-        this.correctAnswersCount = 0;
-        this.isCompleted = false;
-
-        this.loadQuestion();
-
-        this.isLoading = false;
+        this.startExercise();
       },
       error: (err) => {
-        console.error("Falha ao resetar o progresso:", err);
         this.error = "Não foi possível reiniciar o exercício. Tente novamente.";
         this.isLoading = false;
       }
     });
   }
-
 }
