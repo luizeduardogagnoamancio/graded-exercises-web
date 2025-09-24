@@ -19,13 +19,12 @@
 
 .cards-grid {
   display: grid;
-  // Cria colunas responsivas: 3 em telas grandes, 2 em médias, 1 em pequenas
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 24px;
 }
 
 .exercise-card {
-  background-color: var(--text-color-white);
+  background-color: var(--panel-bg);
   border: 1px solid var(--border-color);
   border-radius: 12px;
   padding: 24px;
@@ -48,7 +47,7 @@
     font-size: 1rem;
     color: #6c757d;
     margin-bottom: 20px;
-    min-height: 40px; // Garante alinhamento mesmo com descrições de tamanhos diferentes
+    min-height: 40px;
   }
 
   .progress-bar-container {
@@ -60,7 +59,7 @@
   }
 
   .progress-bar-fill {
-    background-color: var(--sidebar-text); // Usando uma cor do tema
+    background-color: var(--sidebar-text);
     height: 100%;
     border-radius: 20px;
     transition: width 0.5s ease;
