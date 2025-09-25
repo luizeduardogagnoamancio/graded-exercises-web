@@ -9,6 +9,7 @@
 
   --topbar-bg: #022333;
   --main-content-bg: #f5f7fa;
+  --panel-bg: #ffffff;
 
   --text-color-dark: #254F63;
   --border-color: #e0e0e0;
@@ -25,4 +26,21 @@ html, body {
   font-family: var(--font-family-primary);
   background-color: var(--main-content-bg);
   color: var(--text-color-dark);
+}
+
+body.dark-theme {
+  --sidebar-bg: #2c3e50;
+  --topbar-bg: #212F3D;
+  --main-content-bg: #1C2833;
+  --panel-bg: #2c3e50;
+
+  --sidebar-text: #bdc3c7;
+  --sidebar-text-active: #ffffff;
+  --text-color-dark: #ecf0f1;
+  --text-color-white: #17202A;
+
+  --sidebar-item-hover-bg: #34495e;
+  --sidebar-item-active-bg: #4e657e;
+
+  --border-color: #424949;
 }
