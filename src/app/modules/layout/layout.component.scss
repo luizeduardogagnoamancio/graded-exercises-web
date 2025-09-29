@@ -78,7 +78,7 @@
   border-bottom: 1px solid var(--border-color);
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   padding: 0 20px;
   flex-shrink: 0;
 }
@@ -239,15 +239,6 @@
     display: block;
   }
 
-  .search-bar {
-      flex-grow: 1;
-      margin: 0 15px;
-      input {
-          width: 100%;
-          min-width: auto;
-      }
-  }
-
   .layout-container.sidebar-visible {
     .sidebar {
       transform: translateX(0);
@@ -264,7 +255,7 @@
     }
   }
   .top-bar {
-    justify-content: space-between;
+    justify-content: flex-end;
   }
   .logo-desktop {
     display: none;
