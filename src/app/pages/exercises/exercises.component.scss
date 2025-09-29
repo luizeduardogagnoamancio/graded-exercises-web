@@ -15,6 +15,27 @@
     color: #6c757d;
     margin: 0;
   }
+
+  .search-input-container {
+    margin-top: 24px;
+
+    input {
+      width: 100%;
+      max-width: 400px;
+      padding: 12px 20px;
+      font-size: 1rem;
+      border: 1px solid var(--border-color);
+      border-radius: 50px;
+      background-color: var(--panel-bg);
+      color: var(--text-color-dark);
+
+      &:focus {
+        outline: none;
+        border-color: var(--sidebar-text);
+        box-shadow: 0 0 0 3px rgba(37, 79, 99, 0.1);
+      }
+    }
+  }
 }
 
 .cards-grid {

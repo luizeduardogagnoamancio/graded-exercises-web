@@ -1,9 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
-import { ExerciseService } from '../../services/exercise.service';
-import { ExerciseCard } from '../../models/dto/exercises/exerciseCard.dto';
 import { RouterModule } from '@angular/router';
+import { ExerciseCard } from '../../models/dto/exercises/exerciseCard.dto';
+import { ExerciseService } from '../../services/exercise.service';
 
 @Component({
   selector: 'app-exercises',
@@ -14,15 +13,19 @@ import { RouterModule } from '@angular/router';
 })
 export class ExercisesComponent implements OnInit {
   exercises: ExerciseCard[] = [];
+  filteredExercises: ExerciseCard[] = [];
   isLoading = true;
   error: string | null = null;
 
-  constructor(private exerciseService: ExerciseService) {}
+  constructor(
+    private exerciseService: ExerciseService
+  ) {}
 
   ngOnInit(): void {
     this.exerciseService.getExercises().subscribe({
       next: (data) => {
         this.exercises = data;
+        this.filteredExercises = data;
         this.isLoading = false;
       },
       error: (err) => {
@@ -31,5 +34,15 @@ export class ExercisesComponent implements OnInit {
         console.error(err);
       }
     });
+  }
+
+  filterExercises(searchTerm: string): void {
+    if (!searchTerm) {
+      this.filteredExercises = this.exercises;
+      return;
+    }
+    this.filteredExercises = this.exercises.filter(exercise =>
+      exercise.title.toLowerCase().includes(searchTerm.toLowerCase())
+    );
   }
 }
