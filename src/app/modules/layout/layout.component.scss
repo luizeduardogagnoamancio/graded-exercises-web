@@ -232,11 +232,11 @@
   }
 
   .main-area {
-    grid-column: 1 / 2; // Ocupa a única coluna
+    grid-column: 1 / 2;
   }
 
   .menu-toggle {
-    display: block; // Mostra o botão hambúrguer
+    display: block;
   }
 
   .search-bar {
@@ -264,7 +264,6 @@
     }
   }
   .top-bar {
-    // No mobile, o space-between ainda funciona bem com o botão hambúrguer
     justify-content: space-between;
   }
   .logo-desktop {

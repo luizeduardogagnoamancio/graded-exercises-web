@@ -4,6 +4,7 @@ import { RouterModule, RouterOutlet } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { ImageFallbackDirective } from '../../directives/image-fallback.directive';
 import { ThemeService } from '../../services/theme.service';
+import { FormsModule } from '@angular/forms';
 
 
 @Component({
@@ -12,7 +13,8 @@ import { ThemeService } from '../../services/theme.service';
     CommonModule,
     RouterOutlet,
     RouterModule,
-    ImageFallbackDirective
+    ImageFallbackDirective,
+    FormsModule
   ],
   templateUrl: './layout.component.html',
   styleUrl: './layout.component.scss'
@@ -22,7 +24,6 @@ export class LayoutComponent implements OnInit {
   @ViewChild('profileTrigger') profileTrigger!: ElementRef;
   isSidebarVisible = false;
   isProfileModalVisible = false;
-
   userProfileUrl = 'assets/images/default-avatar.png';
 
   constructor(public authService: AuthService,
