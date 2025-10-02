@@ -17,14 +17,16 @@ import { CommonModule } from '@angular/common';
 export class RegisterComponent {
   isLoading: boolean = false;
   errorMessage: string | null = null;
+  name: string = "";
   email: string = "";
   password: string = "";
-  userRole: UserRoleEnum = UserRoleEnum.ADMIN;
+  userRole: UserRoleEnum = UserRoleEnum.USER;
 
   registerData: RegisterRequestDto = {
+      name: "",
       email: "",
       password: "",
-      role: UserRoleEnum.ADMIN
+      role: UserRoleEnum.USER
     };
 
 
@@ -36,6 +38,7 @@ export class RegisterComponent {
     this.isLoading = true;
     this.errorMessage = null;
 
+    this.registerData.name = this.name;
     this.registerData.email = this.email;
     this.registerData.password = this.password;
     this.registerData.role = this.userRole;

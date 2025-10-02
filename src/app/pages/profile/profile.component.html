@@ -1,0 +1,24 @@
+<div class="profile-container">
+  <div *ngIf="isLoading" class="loading-spinner">Loading profile...</div>
+  <div *ngIf="error" class="error-message">{{ error }}</div>
+
+  <div *ngIf="userProfile && !isLoading" class="profile-content">
+    <header class="profile-header">
+      <img src="assets/images/default-avatar.png" alt="User Avatar" class="avatar">
+      <h1>{{ userProfile.name || 'Usuário' }}</h1>
+      <p>{{ userProfile.email }}</p>
+      <p>Member since: {{ userProfile.memberSince | date: 'longDate' }}</p>
+    </header>
+
+    <section class="stats-grid">
+      <div class="stat-card">
+        <h3>Completed Chapters</h3>
+        <p class="stat-value">{{ userProfile.completedChapters }} / {{ userProfile.totalChapters }}</p>
+      </div>
+      <div class="stat-card">
+        <h3>Overall Accuracy</h3>
+        <p class="stat-value">{{ userProfile.overallAccuracy | percent }}</p>
+      </div>
+      </section>
+  </div>
+</div>

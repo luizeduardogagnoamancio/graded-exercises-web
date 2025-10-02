@@ -5,6 +5,7 @@ import { RegisterSuccessComponent } from './pages/register-success/register-succ
 import { LoginComponent } from './pages/login/login.component';
 import { ExercisesComponent } from './pages/exercises/exercises.component';
 import { ExercisePageComponent } from './pages/exercise-page/exercise-page.component';
+import { ProfileComponent } from './pages/profile/profile.component';
 
 
 export const routes: Routes = [
@@ -18,6 +19,7 @@ export const routes: Routes = [
       // Redireciona a rota vazia para 'home'
       { path: '', redirectTo: 'home', pathMatch: 'full' },
       { path: 'exercises', component: ExercisesComponent },
+      { path: 'profile', component: ProfileComponent },
       { path: 'exercises/:chapterId', component: ExercisePageComponent }
     ]
   },
