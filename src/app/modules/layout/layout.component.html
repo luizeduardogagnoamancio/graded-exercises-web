@@ -19,10 +19,6 @@
 
   <div class="main-area">
     <header class="top-bar">
-      <div class="search-bar">
-        <input type="text" placeholder="Search..." />
-      </div>
-
       <div class="user-profile" #profileTrigger>
         <ng-container *ngIf="authService.isLoggedIn(); else notLoggedInTemplate">
           <img
@@ -51,6 +47,9 @@
               <span class="user-email">{{ user.email }}</span>
             </div>
             <div class="modal-actions">
+              <button routerLink="/profile" (click)="toggleProfileModal()">
+                <span>Profile</span>
+              </button>
               <button (click)="handleLogout()">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="action-icon">
                   <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5-5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/>
