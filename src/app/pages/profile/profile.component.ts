@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ProfileService, UserProfile } from '../../services/profile.service';
+import { ProfileService} from '../../services/profile.service';
+import { UserProfile } from '../../models/dto/profile/userProfile.dto';
 
 @Component({
   selector: 'app-profile',

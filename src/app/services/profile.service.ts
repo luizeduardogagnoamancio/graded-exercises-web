@@ -2,15 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ConfigService } from './config.service';
-
-export interface UserProfile {
-  name: string;
-  email: string;
-  memberSince: string;
-  completedChapters: number;
-  totalChapters: number;
-  overallAccuracy: number;
-}
+import { UserProfile } from '../models/dto/profile/userProfile.dto';
 
 @Injectable({
   providedIn: 'root'

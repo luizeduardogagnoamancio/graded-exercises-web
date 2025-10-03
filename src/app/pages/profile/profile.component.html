@@ -2,23 +2,45 @@
   <div *ngIf="isLoading" class="loading-spinner">Loading profile...</div>
   <div *ngIf="error" class="error-message">{{ error }}</div>
 
-  <div *ngIf="userProfile && !isLoading" class="profile-content">
-    <header class="profile-header">
+  <div *ngIf="userProfile && !isLoading" class="profile-grid">
+    <aside class="profile-info-card">
       <img src="assets/images/default-avatar.png" alt="User Avatar" class="avatar">
-      <h1>{{ userProfile.name || 'Usuário' }}</h1>
-      <p>{{ userProfile.email }}</p>
-      <p>Member since: {{ userProfile.memberSince | date: 'longDate' }}</p>
-    </header>
+      <h1 class="user-name">{{ userProfile.name || 'Usuário' }}</h1>
+      <p class="user-email">{{ userProfile.email }}</p>
+      <span class="member-since">Member since: {{ userProfile.memberSince | date: 'MMMM yyyy' }}</span>
+    </aside>
 
-    <section class="stats-grid">
-      <div class="stat-card">
-        <h3>Completed Chapters</h3>
-        <p class="stat-value">{{ userProfile.completedChapters }} / {{ userProfile.totalChapters }}</p>
-      </div>
-      <div class="stat-card">
-        <h3>Overall Accuracy</h3>
-        <p class="stat-value">{{ userProfile.overallAccuracy | percent }}</p>
-      </div>
+    <main class="profile-main-content">
+      <section class="stats-grid">
+        <div class="stat-card">
+          <h3>Completed Chapters</h3>
+          <p class="stat-value">{{ userProfile.completedChapters }} / {{ userProfile.totalChapters }}</p>
+        </div>
+
+        <div class="stat-card">
+          <h3>Daily Streak</h3>
+          <p class="stat-value">
+            🔥 {{ userProfile.dailyStreak }}
+            <span *ngIf="userProfile.dailyStreak === 1">Day</span>
+            <span *ngIf="userProfile.dailyStreak !== 1">Days</span>
+          </p>
+        </div>
       </section>
+
+      <section class="progress-section" *ngIf="userProfile && userProfile.chapterProgress.length > 0">
+        <h2>My Progress</h2>
+        <div class="cards-grid">
+          <div class="exercise-card" *ngFor="let chapter of userProfile.chapterProgress">
+            <h3 class="card-title">{{ chapter.title }}</h3>
+            <div class="progress-bar-container">
+              <div class="progress-bar-fill" [style.width.%]="(chapter.currentProgress / (chapter.totalQuestions || 1)) * 100"></div>
+            </div>
+            <span class="progress-text">
+              {{ chapter.currentProgress }} of {{ chapter.totalQuestions }} lessons
+            </span>
+          </div>
+        </div>
+      </section>
+    </main>
   </div>
 </div>
