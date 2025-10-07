@@ -4,32 +4,38 @@ import { ChapterDetail } from '../../models/dto/chapter/chapter.dto';
 import { Question } from '../../models/dto/question/question.dto';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { ExerciseService } from '../../services/exercise.service';
-import { CommonModule } from '@angular/common';
+import { CommonModule, TitleCasePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-exercise-page',
-  standalone: true, // Garanta que o componente é standalone
-  imports: [CommonModule, FormsModule, RouterModule],
+  standalone: true,
+  imports: [CommonModule, FormsModule, RouterModule, TitleCasePipe],
   templateUrl: './exercise-page.component.html',
-  styleUrl: './exercise-page.component.scss'
+  styleUrls: ['./exercise-page.component.scss']
 })
 export class ExercisePageComponent implements OnInit {
   chapterDetail: ChapterDetail | null = null;
   currentQuestion: Question | null = null;
   parsedContent: any = null;
+  currentFormatContent: any = null;
+
+  availableFormats: string[] = [];
+  selectedFormat: Question['questionType'] = 'FILL_IN_THE_BLANK';
 
   currentQuestionIndex = 0;
   correctAnswersCount = 0;
   isCompleted = false;
 
   userAnswer = '';
+  userAnswerIndex: number | null = null;
   feedback: 'correct' | 'incorrect' | 'none' = 'none';
   isLoading = true;
   error: string | null = null;
-
-  // NOVO ESTADO para controlar a revelação da resposta
   answerRevealed = false;
+
+  isSettingsModalVisible = false;
+  tempSelectedFormat: Question['questionType'] = this.selectedFormat;
 
   constructor(
     private route: ActivatedRoute,
@@ -52,6 +58,12 @@ export class ExercisePageComponent implements OnInit {
           this.isCompleted = false;
           this.currentQuestionIndex = data.startQuestionIndex;
           this.correctAnswersCount = data.startQuestionIndex;
+
+          if (this.chapterDetail.questions.length > 0) {
+              const firstQuestionContent = JSON.parse(this.chapterDetail.questions[0].content);
+              this.selectedFormat = firstQuestionContent.defaultFormat;
+          }
+
           this.loadQuestion();
           this.isLoading = false;
         },
@@ -67,8 +79,12 @@ export class ExercisePageComponent implements OnInit {
     if (this.chapterDetail && this.chapterDetail.questions.length > this.currentQuestionIndex) {
       this.currentQuestion = this.chapterDetail.questions[this.currentQuestionIndex];
       this.parsedContent = JSON.parse(this.currentQuestion.content);
-      // Reseta os estados para a nova questão
+
+      this.availableFormats = Object.keys(this.parsedContent.formats);
+      this.setFormatContent();
+
       this.userAnswer = '';
+      this.userAnswerIndex = null;
       this.feedback = 'none';
       this.answerRevealed = false;
     } else {
@@ -77,26 +93,56 @@ export class ExercisePageComponent implements OnInit {
     }
   }
 
+  private setFormatContent(): void {
+    if (this.parsedContent && this.parsedContent.formats) {
+      this.currentFormatContent = this.parsedContent.formats[this.selectedFormat];
+    }
+  }
+
+  changeFormat(format: any): void {
+    this.selectedFormat = format as Question['questionType'];
+    this.setFormatContent();
+    this.userAnswer = '';
+    this.userAnswerIndex = null;
+    this.feedback = 'none';
+  }
+
+  selectAnswer(index: number): void {
+    if (this.feedback !== 'correct') {
+      this.userAnswerIndex = index;
+    }
+  }
+
   checkAnswer(): void {
-    if (!this.parsedContent || this.userAnswer.trim() === '') return;
+    if (!this.currentQuestion || !this.currentFormatContent) return;
 
-    if (this.userAnswer.trim().toLowerCase() === this.parsedContent.correctAnswer.toLowerCase()) {
+    let isCorrect = false;
+
+    if (this.selectedFormat === 'FILL_IN_THE_BLANK') {
+      if (this.userAnswer.trim().toLowerCase() === this.currentFormatContent.correctAnswer.toLowerCase()) {
+        isCorrect = true;
+      }
+    } else if (this.selectedFormat === 'MULTIPLE_CHOICE') {
+      if (this.userAnswerIndex === this.currentFormatContent.correctAnswerIndex) {
+        isCorrect = true;
+      }
+    }
+
+    if (isCorrect) {
       this.feedback = 'correct';
-      this.correctAnswersCount++; // Incrementa o contador de acertos
-
-      this.userAnswerService.saveAnswer(this.currentQuestion!.id, true).subscribe({
-        next: () => console.log(`Progresso salvo para a questão ${this.currentQuestion?.id}`),
+      this.correctAnswersCount++;
+      this.userAnswerService.saveAnswer(this.currentQuestion.id, true).subscribe({
+        next: () => console.log(`Progresso salvo para a quest�o ${this.currentQuestion?.id}`),
         error: (err) => console.error("Falha ao salvar progresso:", err)
       });
-
     } else {
       this.feedback = 'incorrect';
     }
   }
 
   showAnswer(): void {
-    this.answerRevealed = true;  // Ativa o estado que revela a resposta e o botão "Continue"
-    this.feedback = 'incorrect'; // Garante que a área de feedback apareça
+    this.answerRevealed = true;
+    this.feedback = 'incorrect';
   }
 
   nextQuestion(): void {
@@ -114,9 +160,26 @@ export class ExercisePageComponent implements OnInit {
         this.startExercise();
       },
       error: (err) => {
-        this.error = "Não foi possível reiniciar o exercício. Tente novamente.";
+        this.error = "N�o foi poss�vel reiniciar o exerc�cio. Tente novamente.";
         this.isLoading = false;
       }
     });
   }
+
+  openSettingsModal(): void {
+    this.tempSelectedFormat = this.selectedFormat;
+    this.isSettingsModalVisible = true;
+  }
+
+  closeSettingsModal(): void {
+    this.isSettingsModalVisible = false;
+  }
+
+  confirmSettings(): void {
+    if (this.tempSelectedFormat !== this.selectedFormat) {
+      this.changeFormat(this.tempSelectedFormat);
+    }
+    this.closeSettingsModal();
+  }
+
 }
