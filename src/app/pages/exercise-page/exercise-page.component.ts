@@ -1,4 +1,3 @@
-import { UserAnswerService } from './../../services/user-answer.service';
 import { Component, OnInit } from '@angular/core';
 import { ChapterDetail } from '../../models/dto/chapter/chapter.dto';
 import { Question } from '../../models/dto/question/question.dto';
@@ -6,11 +5,13 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
 import { ExerciseService } from '../../services/exercise.service';
 import { CommonModule, TitleCasePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { UserAnswerService } from '../../services/user-answer.service';
+import { DragDropModule, CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-exercise-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, TitleCasePipe],
+  imports: [CommonModule, FormsModule, RouterModule, TitleCasePipe, DragDropModule],
   templateUrl: './exercise-page.component.html',
   styleUrls: ['./exercise-page.component.scss']
 })
@@ -21,7 +22,7 @@ export class ExercisePageComponent implements OnInit {
   currentFormatContent: any = null;
 
   availableFormats: string[] = [];
-  selectedFormat: Question['questionType'] = 'FILL_IN_THE_BLANK';
+  selectedFormat: 'FILL_IN_THE_BLANK' | 'MULTIPLE_CHOICE' | 'DRAG_AND_DROP' = 'FILL_IN_THE_BLANK';
 
   currentQuestionIndex = 0;
   correctAnswersCount = 0;
@@ -35,7 +36,10 @@ export class ExercisePageComponent implements OnInit {
   answerRevealed = false;
 
   isSettingsModalVisible = false;
-  tempSelectedFormat: Question['questionType'] = this.selectedFormat;
+  tempSelectedFormat!: 'FILL_IN_THE_BLANK' | 'MULTIPLE_CHOICE' | 'DRAG_AND_DROP';
+
+  dropZoneData: string[] = [];
+  availableDragOptions: string[] = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -60,8 +64,8 @@ export class ExercisePageComponent implements OnInit {
           this.correctAnswersCount = data.startQuestionIndex;
 
           if (this.chapterDetail.questions.length > 0) {
-              const firstQuestionContent = JSON.parse(this.chapterDetail.questions[0].content);
-              this.selectedFormat = firstQuestionContent.defaultFormat;
+            const firstQuestionContent = JSON.parse(this.chapterDetail.questions[0].content);
+            this.selectedFormat = firstQuestionContent.defaultFormat;
           }
 
           this.loadQuestion();
@@ -79,14 +83,18 @@ export class ExercisePageComponent implements OnInit {
     if (this.chapterDetail && this.chapterDetail.questions.length > this.currentQuestionIndex) {
       this.currentQuestion = this.chapterDetail.questions[this.currentQuestionIndex];
       this.parsedContent = JSON.parse(this.currentQuestion.content);
-
       this.availableFormats = Object.keys(this.parsedContent.formats);
       this.setFormatContent();
 
       this.userAnswer = '';
       this.userAnswerIndex = null;
+      this.dropZoneData = []; // Limpa a caixa de resposta
       this.feedback = 'none';
       this.answerRevealed = false;
+
+      if (this.selectedFormat === 'DRAG_AND_DROP' && this.currentFormatContent) {
+        this.availableDragOptions = [...this.currentFormatContent.options];
+      }
     } else {
       this.isCompleted = true;
       this.currentQuestion = null;
@@ -104,7 +112,12 @@ export class ExercisePageComponent implements OnInit {
     this.setFormatContent();
     this.userAnswer = '';
     this.userAnswerIndex = null;
+    this.dropZoneData = [];
     this.feedback = 'none';
+
+    if (this.currentFormatContent) {
+      this.availableDragOptions = [...this.currentFormatContent.options];
+    }
   }
 
   selectAnswer(index: number): void {
@@ -113,27 +126,44 @@ export class ExercisePageComponent implements OnInit {
     }
   }
 
+  // LÃ³gica de onDrop CORRIGIDA E MELHORADA
+  onDrop(event: CdkDragDrop<string[]>): void {
+    if (this.feedback === 'correct') return;
+
+    if (event.previousContainer === event.container) {
+      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+    } else {
+      // Impede que mais de um item seja solto na caixa de resposta
+      if (event.container.id === 'answer-box' && event.container.data.length > 0) {
+        return;
+      }
+      transferArrayItem(
+        event.previousContainer.data,
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex
+      );
+    }
+  }
+
   checkAnswer(): void {
     if (!this.currentQuestion || !this.currentFormatContent) return;
-
     let isCorrect = false;
-
     if (this.selectedFormat === 'FILL_IN_THE_BLANK') {
-      if (this.userAnswer.trim().toLowerCase() === this.currentFormatContent.correctAnswer.toLowerCase()) {
-        isCorrect = true;
-      }
+      isCorrect = this.userAnswer.trim().toLowerCase() === this.currentFormatContent.correctAnswer.toLowerCase();
     } else if (this.selectedFormat === 'MULTIPLE_CHOICE') {
-      if (this.userAnswerIndex === this.currentFormatContent.correctAnswerIndex) {
-        isCorrect = true;
-      }
+      isCorrect = this.userAnswerIndex === this.currentFormatContent.correctAnswerIndex;
+    } else if (this.selectedFormat === 'DRAG_AND_DROP') {
+      // Verifica se hÃ¡ um item na caixa de resposta e se ele estÃ¡ correto
+      isCorrect = this.dropZoneData.length === 1 && this.dropZoneData[0] === this.currentFormatContent.correctAnswer;
     }
 
     if (isCorrect) {
       this.feedback = 'correct';
       this.correctAnswersCount++;
       this.userAnswerService.saveAnswer(this.currentQuestion.id, true).subscribe({
-        next: () => console.log(`Progresso salvo para a questão ${this.currentQuestion?.id}`),
-        error: (err) => console.error("Falha ao salvar progresso:", err)
+        next: () => console.log(`Progress saved for question ${this.currentQuestion?.id}`),
+        error: (err) => console.error("Failed to save progress:", err)
       });
     } else {
       this.feedback = 'incorrect';
@@ -156,11 +186,9 @@ export class ExercisePageComponent implements OnInit {
     if (!this.chapterDetail) return;
     this.isLoading = true;
     this.userAnswerService.resetChapterProgress(this.chapterDetail.id).subscribe({
-      next: () => {
-        this.startExercise();
-      },
+      next: () => this.startExercise(),
       error: (err) => {
-        this.error = "Não foi possível reiniciar o exercício. Tente novamente.";
+        this.error = "Could not restart the exercise. Please try again.";
         this.isLoading = false;
       }
     });
@@ -181,5 +209,4 @@ export class ExercisePageComponent implements OnInit {
     }
     this.closeSettingsModal();
   }
-
 }
