@@ -6,12 +6,11 @@ import { ExerciseService } from '../../services/exercise.service';
 import { CommonModule, TitleCasePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { UserAnswerService } from '../../services/user-answer.service';
-import { DragDropModule, CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-exercise-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, TitleCasePipe, DragDropModule],
+  imports: [CommonModule, FormsModule, RouterModule, TitleCasePipe],
   templateUrl: './exercise-page.component.html',
   styleUrls: ['./exercise-page.component.scss']
 })
@@ -22,7 +21,7 @@ export class ExercisePageComponent implements OnInit {
   currentFormatContent: any = null;
 
   availableFormats: string[] = [];
-  selectedFormat: 'FILL_IN_THE_BLANK' | 'MULTIPLE_CHOICE' | 'DRAG_AND_DROP' = 'FILL_IN_THE_BLANK';
+  selectedFormat: Question['questionType'] = 'FILL_IN_THE_BLANK';
 
   currentQuestionIndex = 0;
   correctAnswersCount = 0;
@@ -36,10 +35,10 @@ export class ExercisePageComponent implements OnInit {
   answerRevealed = false;
 
   isSettingsModalVisible = false;
-  tempSelectedFormat!: 'FILL_IN_THE_BLANK' | 'MULTIPLE_CHOICE' | 'DRAG_AND_DROP';
+  tempSelectedFormat!: Question['questionType'];
 
-  dropZoneData: string[] = [];
-  availableDragOptions: string[] = [];
+  scrambleAnswer: string[] = [];
+  scrambleOptions: string[] = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -88,12 +87,12 @@ export class ExercisePageComponent implements OnInit {
 
       this.userAnswer = '';
       this.userAnswerIndex = null;
-      this.dropZoneData = []; // Limpa a caixa de resposta
+      this.scrambleAnswer = [];
       this.feedback = 'none';
       this.answerRevealed = false;
 
-      if (this.selectedFormat === 'DRAG_AND_DROP' && this.currentFormatContent) {
-        this.availableDragOptions = [...this.currentFormatContent.options];
+      if (this.selectedFormat == 'SENTENCE_SCRAMBLE' && this.currentFormatContent) {
+        this.scrambleOptions = [...this.currentFormatContent.shuffledOptions];
       }
     } else {
       this.isCompleted = true;
@@ -111,12 +110,12 @@ export class ExercisePageComponent implements OnInit {
     this.selectedFormat = format as Question['questionType'];
     this.setFormatContent();
     this.userAnswer = '';
+    this.scrambleAnswer = [];
     this.userAnswerIndex = null;
-    this.dropZoneData = [];
     this.feedback = 'none';
 
-    if (this.currentFormatContent) {
-      this.availableDragOptions = [...this.currentFormatContent.options];
+    if (this.selectedFormat == 'SENTENCE_SCRAMBLE' && this.currentFormatContent) {
+      this.scrambleOptions = [...this.currentFormatContent.shuffledOptions];
     }
   }
 
@@ -126,36 +125,18 @@ export class ExercisePageComponent implements OnInit {
     }
   }
 
-  // Lógica de onDrop CORRIGIDA E MELHORADA
-  onDrop(event: CdkDragDrop<string[]>): void {
-    if (this.feedback === 'correct') return;
-
-    if (event.previousContainer === event.container) {
-      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
-    } else {
-      // Impede que mais de um item seja solto na caixa de resposta
-      if (event.container.id === 'answer-box' && event.container.data.length > 0) {
-        return;
-      }
-      transferArrayItem(
-        event.previousContainer.data,
-        event.container.data,
-        event.previousIndex,
-        event.currentIndex
-      );
-    }
-  }
-
   checkAnswer(): void {
     if (!this.currentQuestion || !this.currentFormatContent) return;
     let isCorrect = false;
+
     if (this.selectedFormat === 'FILL_IN_THE_BLANK') {
       isCorrect = this.userAnswer.trim().toLowerCase() === this.currentFormatContent.correctAnswer.toLowerCase();
     } else if (this.selectedFormat === 'MULTIPLE_CHOICE') {
       isCorrect = this.userAnswerIndex === this.currentFormatContent.correctAnswerIndex;
-    } else if (this.selectedFormat === 'DRAG_AND_DROP') {
-      // Verifica se há um item na caixa de resposta e se ele está correto
-      isCorrect = this.dropZoneData.length === 1 && this.dropZoneData[0] === this.currentFormatContent.correctAnswer;
+    } else if (this.selectedFormat === 'SENTENCE_SCRAMBLE') {
+      const userAnswerString = this.scrambleAnswer.join(' ');
+      const correctAnswerString = this.currentFormatContent.correctOrder.join(' ');
+      isCorrect = userAnswerString === correctAnswerString;
     }
 
     if (isCorrect) {
@@ -208,5 +189,19 @@ export class ExercisePageComponent implements OnInit {
       this.changeFormat(this.tempSelectedFormat);
     }
     this.closeSettingsModal();
+  }
+
+  selectScrambleWord(word: string, index: number): void {
+    if (this.feedback === 'correct') return;
+
+    this.scrambleAnswer.push(word);
+    this.scrambleOptions.splice(index, 1);
+  }
+
+  returnScrambleWord(word: string, index: number): void {
+    if (this.feedback === 'correct') return;
+
+    this.scrambleOptions.push(word);
+    this.scrambleAnswer.splice(index, 1);
   }
 }

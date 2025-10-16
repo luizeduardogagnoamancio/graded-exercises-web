@@ -45,32 +45,26 @@
           </div>
         </div>
 
-        <div *ngSwitchCase="'DRAG_AND_DROP'" class="drag-drop-container">
-          <div class="sentence-container">
-            <ng-container *ngFor="let part of currentFormatContent.sentenceParts">
-              <span *ngIf="part !== '___'" class="text-part">{{ part }}</span>
-              <div
-                *ngIf="part === '___'"
-                id="answer-box"
-                cdkDropList
-                #answerList="cdkDropList"
-                [cdkDropListData]="dropZoneData"
-                (cdkDropListDropped)="onDrop($event)"
-                class="drop-zone"
-              >
-                <div class="drag-item" *ngFor="let item of dropZoneData" cdkDrag>{{ item }}</div>
-              </div>
-            </ng-container>
+        <div *ngSwitchCase="'SENTENCE_SCRAMBLE'" class="scramble-container">
+          <div class="scramble-answer-area">
+            <button
+              *ngFor="let word of scrambleAnswer; let i = index"
+              class="scramble-word-button"
+              (click)="returnScrambleWord(word, i)">
+              {{ word }}
+            </button>
+            <div *ngIf="scrambleAnswer.length === 0" class="scramble-placeholder">
+              Click the words below to form the sentence
+            </div>
           </div>
-          <div
-            class="options-container"
-            cdkDropList
-            #optionsList="cdkDropList"
-            [cdkDropListData]="availableDragOptions"
-            [cdkDropListConnectedTo]="[answerList]"
-            (cdkDropListDropped)="onDrop($event)"
-          >
-            <div class="drag-item" *ngFor="let option of availableDragOptions" cdkDrag>{{ option }}</div>
+
+          <div class="scramble-options-area">
+            <button
+              *ngFor="let word of scrambleOptions; let i = index"
+              class="scramble-word-button"
+              (click)="selectScrambleWord(word, i)">
+              {{ word }}
+            </button>
           </div>
         </div>
 
@@ -88,7 +82,7 @@
     </div>
 
     <div class="completion-area" *ngIf="isCompleted">
-      <div class="completion-icon">🎉</div>
+      <div class="completion-icon">??</div>
       <h2>Chapter Complete!</h2>
       <p class="summary-text">
         You got <strong>{{ correctAnswersCount }}</strong> of <strong>{{ chapterDetail.questions.length }}</strong> questions right.
