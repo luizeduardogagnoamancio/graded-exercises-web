@@ -12,7 +12,7 @@ import { UserAnswerService } from '../../services/user-answer.service';
   standalone: true,
   imports: [CommonModule, FormsModule, RouterModule, TitleCasePipe],
   templateUrl: './exercise-page.component.html',
-  styleUrls: ['./exercise-page.component.scss']
+  styleUrls: ['./exercise-page.component.scss'],
 })
 export class ExercisePageComponent implements OnInit {
   chapterDetail: ChapterDetail | null = null;
@@ -29,6 +29,9 @@ export class ExercisePageComponent implements OnInit {
 
   userAnswer = '';
   userAnswerIndex: number | null = null;
+  scrambleAnswer: string[] = [];
+  scrambleOptions: string[] = [];
+
   feedback: 'correct' | 'incorrect' | 'none' = 'none';
   isLoading = true;
   error: string | null = null;
@@ -37,14 +40,33 @@ export class ExercisePageComponent implements OnInit {
   isSettingsModalVisible = false;
   tempSelectedFormat!: Question['questionType'];
 
-  scrambleAnswer: string[] = [];
-  scrambleOptions: string[] = [];
+  private validationStrategies: Map<Question['questionType'], () => boolean>;
 
   constructor(
     private route: ActivatedRoute,
     private exerciseService: ExerciseService,
     private userAnswerService: UserAnswerService
-  ) { }
+  ) {
+    this.validationStrategies = new Map([
+      [
+        'FILL_IN_THE_BLANK',
+        () =>
+          this.userAnswer.trim().toLowerCase() ===
+          this.currentFormatContent.correctAnswer.toLowerCase(),
+      ],
+      [
+        'MULTIPLE_CHOICE',
+        () =>
+          this.userAnswerIndex === this.currentFormatContent.correctAnswerIndex,
+      ],
+      [
+        'SENTENCE_SCRAMBLE',
+        () =>
+          this.scrambleAnswer.join(' ') ===
+          this.currentFormatContent.correctOrder.join(' '),
+      ],
+    ]);
+  }
 
   ngOnInit(): void {
     this.startExercise();
@@ -63,35 +85,38 @@ export class ExercisePageComponent implements OnInit {
           this.correctAnswersCount = data.startQuestionIndex;
 
           if (this.chapterDetail.questions.length > 0) {
-            const firstQuestionContent = JSON.parse(this.chapterDetail.questions[0].content);
+            const firstQuestionContent = JSON.parse(
+              this.chapterDetail.questions[0].content
+            );
             this.selectedFormat = firstQuestionContent.defaultFormat;
           }
-
           this.loadQuestion();
           this.isLoading = false;
         },
         error: (err) => {
-          this.error = "Failed to load the exercise.";
+          this.error = 'Failed to load the exercise.';
           this.isLoading = false;
-        }
+        },
       });
     }
   }
 
   loadQuestion(): void {
-    if (this.chapterDetail && this.chapterDetail.questions.length > this.currentQuestionIndex) {
-      this.currentQuestion = this.chapterDetail.questions[this.currentQuestionIndex];
+    if (
+      this.chapterDetail &&
+      this.chapterDetail.questions.length > this.currentQuestionIndex
+    ) {
+      this.currentQuestion =
+        this.chapterDetail.questions[this.currentQuestionIndex];
       this.parsedContent = JSON.parse(this.currentQuestion.content);
       this.availableFormats = Object.keys(this.parsedContent.formats);
       this.setFormatContent();
+      this.resetAnswerStates();
 
-      this.userAnswer = '';
-      this.userAnswerIndex = null;
-      this.scrambleAnswer = [];
-      this.feedback = 'none';
-      this.answerRevealed = false;
-
-      if (this.selectedFormat == 'SENTENCE_SCRAMBLE' && this.currentFormatContent) {
+      if (
+        this.selectedFormat === 'SENTENCE_SCRAMBLE' &&
+        this.currentFormatContent
+      ) {
         this.scrambleOptions = [...this.currentFormatContent.shuffledOptions];
       }
     } else {
@@ -100,22 +125,54 @@ export class ExercisePageComponent implements OnInit {
     }
   }
 
+  private resetAnswerStates(): void {
+    this.userAnswer = '';
+    this.userAnswerIndex = null;
+    this.scrambleAnswer = [];
+    this.feedback = 'none';
+    this.answerRevealed = false;
+  }
+
   private setFormatContent(): void {
     if (this.parsedContent && this.parsedContent.formats) {
-      this.currentFormatContent = this.parsedContent.formats[this.selectedFormat];
+      this.currentFormatContent =
+        this.parsedContent.formats[this.selectedFormat];
     }
   }
 
   changeFormat(format: any): void {
     this.selectedFormat = format as Question['questionType'];
     this.setFormatContent();
-    this.userAnswer = '';
-    this.scrambleAnswer = [];
-    this.userAnswerIndex = null;
-    this.feedback = 'none';
+    this.resetAnswerStates();
 
-    if (this.selectedFormat == 'SENTENCE_SCRAMBLE' && this.currentFormatContent) {
+    if (
+      this.selectedFormat === 'SENTENCE_SCRAMBLE' &&
+      this.currentFormatContent
+    ) {
       this.scrambleOptions = [...this.currentFormatContent.shuffledOptions];
+    }
+  }
+
+  checkAnswer(): void {
+    if (!this.currentQuestion || !this.currentFormatContent) return;
+
+    const strategy = this.validationStrategies.get(this.selectedFormat);
+    const isCorrect = strategy ? strategy() : false;
+
+    if (isCorrect) {
+      this.feedback = 'correct';
+      this.correctAnswersCount++;
+      this.userAnswerService
+        .saveAnswer(this.currentQuestion.id, true)
+        .subscribe({
+          next: () =>
+            console.log(
+              `Progress saved for question ${this.currentQuestion?.id}`
+            ),
+          error: (err) => console.error('Failed to save progress:', err),
+        });
+    } else {
+      this.feedback = 'incorrect';
     }
   }
 
@@ -125,30 +182,16 @@ export class ExercisePageComponent implements OnInit {
     }
   }
 
-  checkAnswer(): void {
-    if (!this.currentQuestion || !this.currentFormatContent) return;
-    let isCorrect = false;
+  selectScrambleWord(word: string, index: number): void {
+    if (this.feedback === 'correct') return;
+    this.scrambleAnswer.push(word);
+    this.scrambleOptions.splice(index, 1);
+  }
 
-    if (this.selectedFormat === 'FILL_IN_THE_BLANK') {
-      isCorrect = this.userAnswer.trim().toLowerCase() === this.currentFormatContent.correctAnswer.toLowerCase();
-    } else if (this.selectedFormat === 'MULTIPLE_CHOICE') {
-      isCorrect = this.userAnswerIndex === this.currentFormatContent.correctAnswerIndex;
-    } else if (this.selectedFormat === 'SENTENCE_SCRAMBLE') {
-      const userAnswerString = this.scrambleAnswer.join(' ');
-      const correctAnswerString = this.currentFormatContent.correctOrder.join(' ');
-      isCorrect = userAnswerString === correctAnswerString;
-    }
-
-    if (isCorrect) {
-      this.feedback = 'correct';
-      this.correctAnswersCount++;
-      this.userAnswerService.saveAnswer(this.currentQuestion.id, true).subscribe({
-        next: () => console.log(`Progress saved for question ${this.currentQuestion?.id}`),
-        error: (err) => console.error("Failed to save progress:", err)
-      });
-    } else {
-      this.feedback = 'incorrect';
-    }
+  returnScrambleWord(word: string, index: number): void {
+    if (this.feedback === 'correct') return;
+    this.scrambleOptions.push(word);
+    this.scrambleAnswer.splice(index, 1);
   }
 
   showAnswer(): void {
@@ -157,7 +200,10 @@ export class ExercisePageComponent implements OnInit {
   }
 
   nextQuestion(): void {
-    if (this.chapterDetail && this.currentQuestionIndex < this.chapterDetail.questions.length) {
+    if (
+      this.chapterDetail &&
+      this.currentQuestionIndex < this.chapterDetail.questions.length
+    ) {
       this.currentQuestionIndex++;
       this.loadQuestion();
     }
@@ -166,13 +212,15 @@ export class ExercisePageComponent implements OnInit {
   restartExercise(): void {
     if (!this.chapterDetail) return;
     this.isLoading = true;
-    this.userAnswerService.resetChapterProgress(this.chapterDetail.id).subscribe({
-      next: () => this.startExercise(),
-      error: (err) => {
-        this.error = "Could not restart the exercise. Please try again.";
-        this.isLoading = false;
-      }
-    });
+    this.userAnswerService
+      .resetChapterProgress(this.chapterDetail.id)
+      .subscribe({
+        next: () => this.startExercise(),
+        error: (err) => {
+          this.error = 'Could not restart the exercise. Please try again.';
+          this.isLoading = false;
+        },
+      });
   }
 
   openSettingsModal(): void {
@@ -189,19 +237,5 @@ export class ExercisePageComponent implements OnInit {
       this.changeFormat(this.tempSelectedFormat);
     }
     this.closeSettingsModal();
-  }
-
-  selectScrambleWord(word: string, index: number): void {
-    if (this.feedback === 'correct') return;
-
-    this.scrambleAnswer.push(word);
-    this.scrambleOptions.splice(index, 1);
-  }
-
-  returnScrambleWord(word: string, index: number): void {
-    if (this.feedback === 'correct') return;
-
-    this.scrambleOptions.push(word);
-    this.scrambleAnswer.splice(index, 1);
   }
 }
