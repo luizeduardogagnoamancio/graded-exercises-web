@@ -20,11 +20,25 @@
   position: sticky;
   top: 24px;
 
-  .avatar {
+  .avatar-wrapper {
+    position: relative;
     width: 120px;
     height: 120px;
+    margin: 0 auto 20px auto;
+  }
+
+  .avatar-container {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    margin-bottom: 20px;
+  }
+
+  .avatar {
+    width: 100%;
+    height: 100%;
     border-radius: 50%;
-    margin-bottom: 16px;
+    object-fit: cover;
     border: 3px solid var(--border-color);
   }
 
@@ -43,6 +57,36 @@
   .member-since {
     font-size: 0.9rem;
     color: #8a95a1;
+  }
+
+  .edit-avatar-button {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    transform: translate(40%, 5%);
+
+    background-color: var(--sidebar-text);
+    color: white;
+    border: 2px solid var(--panel-bg);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    transition: background-color 0.2s ease, transform 0.2s ease;
+
+    &:hover {
+      background-color: var(--sidebar-text-active);
+      transform: translate(40%, 5%) scale(1.05);
+    }
+
+    svg {
+      width: 20px;
+      height: 20px;
+    }
   }
 }
 

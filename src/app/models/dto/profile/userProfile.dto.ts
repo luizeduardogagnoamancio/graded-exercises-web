@@ -8,4 +8,5 @@ export interface UserProfile {
   totalChapters: number;
   dailyStreak: number;
   chapterProgress: ChapterProgress[];
+  avatarUrl: string | null;
 }

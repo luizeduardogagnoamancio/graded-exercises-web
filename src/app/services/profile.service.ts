@@ -17,4 +17,8 @@ export class ProfileService {
   getUserProfile(): Observable<UserProfile> {
     return this.http.get<UserProfile>(this.profileUrl);
   }
+
+  updateAvatar(avatarUrl: string): Observable<void> {
+    return this.http.put<void>(`${this.profileUrl}/avatar`, { avatarUrl });
+  }
 }
