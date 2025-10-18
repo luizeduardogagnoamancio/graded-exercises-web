@@ -46,6 +46,7 @@ export class ProfileComponent implements OnInit {
       next: () => {
         if (this.userProfile) {
           this.userProfile.avatarUrl = avatarUrl;
+          window.location.reload();
         }
         this.closeAvatarModal();
       },

@@ -29,14 +29,20 @@
   <div class="main-area">
     <header class="top-bar">
       <div class="user-profile" #profileTrigger>
-        <ng-container *ngIf="authService.isLoggedIn(); else notLoggedInTemplate">
-          <img
-            src="assets/images/default-avatar.png"
-            alt="User Profile"
+
+
+<ng-container *ngIf="authService.isLoggedIn(); else notLoggedInTemplate">
+
+
+<img
+            [src]="userAvatarUrl || 'assets/images/default-avatar.svg'"
+
+alt="User Profile"
             (click)="toggleProfileModal()"
             appImageFallback
-          />
-        </ng-container>
+            class="avatar-thumbnail" />
+
+</ng-container>
 
         <ng-template #notLoggedInTemplate>
           <div class="default-profile-icon" (click)="toggleProfileModal()">
@@ -46,12 +52,15 @@
           </div>
         </ng-template>
 
-        <div class="profile-modal" *ngIf="isProfileModalVisible">
-          <ng-container *ngIf="authService.currentUser$ | async as user; else notLoggedInModalContent">
 
+
+<div class="profile-modal" *ngIf="isProfileModalVisible" #profileModal>
+          <ng-container *ngIf="authService.currentUser$ | async as user; else notLoggedInModalContent">
             <div class="modal-header">
               <div class="avatar-container">
-                <img [src]="userProfileUrl" appImageFallback alt="Avatar" class="avatar"/>
+
+
+<img [src]="userAvatarUrl || 'assets/images/default-avatar.svg'" appImageFallback alt="Avatar" class="avatar"/>
               </div>
               <span class="user-email">{{ user.email }}</span>
             </div>
@@ -75,7 +84,6 @@
                 </span>
               </button>
             </div>
-
           </ng-container>
 
           <ng-template #notLoggedInModalContent>
