@@ -59,13 +59,15 @@
 
   &:hover {
     background-color: var(--sidebar-item-hover-bg);
+    color: var(--sidebar-text-active);
   }
 
-  &.active {
+  //Talvez tirar essa parte aqui
+  /* &.active {
     background-color: var(--sidebar-item-active-bg);
     color: var(--sidebar-text-active);
     font-weight: 600;
-  }
+  } */
 }
 
 .main-area {
@@ -104,6 +106,14 @@
 
 .user-profile {
   position: relative;
+
+  .avatar-thumbnail {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    cursor: pointer;
+  }
 }
 
 .default-profile-icon {

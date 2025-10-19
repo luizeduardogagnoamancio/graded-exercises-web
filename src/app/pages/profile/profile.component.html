@@ -4,43 +4,113 @@
 
   <div *ngIf="userProfile && !isLoading" class="profile-grid">
     <aside class="profile-info-card">
-      <img src="assets/images/default-avatar.png" alt="User Avatar" class="avatar">
-      <h1 class="user-name">{{ userProfile.name || 'Usuário' }}</h1>
+      <div class="avatar-wrapper">
+        <img
+          [src]="userProfile.avatarUrl || 'assets/images/default-avatar.png'"
+          alt="User Avatar"
+          class="avatar"
+        />
+        <button
+          class="edit-avatar-button"
+          (click)="openAvatarModal()"
+          title="Edit Avatar"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path
+              d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"
+            ></path>
+            <path
+              d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"
+            ></path>
+          </svg>
+        </button>
+      </div>
+      <h1 class="user-name">{{ userProfile.name || "Usuário" }}</h1>
       <p class="user-email">{{ userProfile.email }}</p>
-      <span class="member-since">Member since: {{ userProfile.memberSince | date: 'MMMM yyyy' }}</span>
+      <span class="member-since"
+        >Member since: {{ userProfile.memberSince | date : "MMMM yyyy" }}</span
+      >
     </aside>
 
     <main class="profile-main-content">
       <section class="stats-grid">
         <div class="stat-card">
           <h3>Completed Chapters</h3>
-          <p class="stat-value">{{ userProfile.completedChapters }} / {{ userProfile.totalChapters }}</p>
+          <p class="stat-value">
+            {{ userProfile.completedChapters }} /
+            {{ userProfile.totalChapters }}
+          </p>
         </div>
 
         <div class="stat-card">
           <h3>Daily Streak</h3>
           <p class="stat-value">
-            🔥 {{ userProfile.dailyStreak }}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="stat-icon"
+            >
+              <polygon
+                points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"
+              ></polygon>
+            </svg>
+            {{ userProfile.dailyStreak }}
             <span *ngIf="userProfile.dailyStreak === 1">Day</span>
             <span *ngIf="userProfile.dailyStreak !== 1">Days</span>
           </p>
         </div>
       </section>
 
-      <section class="progress-section" *ngIf="userProfile && userProfile.chapterProgress.length > 0">
+      <section
+        class="progress-section"
+        *ngIf="userProfile && userProfile.chapterProgress.length > 0"
+      >
         <h2>My Progress</h2>
         <div class="cards-grid">
-          <div class="exercise-card" *ngFor="let chapter of userProfile.chapterProgress">
+          <div
+            class="exercise-card"
+            *ngFor="let chapter of userProfile.chapterProgress"
+          >
             <h3 class="card-title">{{ chapter.title }}</h3>
             <div class="progress-bar-container">
-              <div class="progress-bar-fill" [style.width.%]="(chapter.currentProgress / (chapter.totalQuestions || 1)) * 100"></div>
+              <div
+                class="progress-bar-fill"
+                [style.width.%]="
+                  (chapter.currentProgress / (chapter.totalQuestions || 1)) *
+                  100
+                "
+              ></div>
             </div>
             <span class="progress-text">
-              {{ chapter.currentProgress }} of {{ chapter.totalQuestions }} lessons
+              {{ chapter.currentProgress }} of
+              {{ chapter.totalQuestions }} lessons
             </span>
           </div>
         </div>
       </section>
     </main>
+    <app-avatar-selection
+      *ngIf="isAvatarModalVisible"
+      (close)="closeAvatarModal()"
+      (avatarSelected)="handleAvatarSelected($event)"
+    >
+    </app-avatar-selection>
   </div>
 </div>

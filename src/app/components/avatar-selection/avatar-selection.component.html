@@ -1,0 +1,23 @@
+<div class="modal-overlay" (click)="close.emit()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <header class="modal-header">
+      <h2>Choose your Avatar</h2>
+      <button class="close-button" (click)="close.emit()">&times;</button>
+    </header>
+    <main class="modal-body">
+      <div class="avatar-grid">
+        <div
+          *ngFor="let avatar of avatars"
+          class="avatar-option"
+          [class.selected]="avatar === selectedAvatar"
+          (click)="selectAvatar(avatar)">
+          <img [src]="avatar" alt="Avatar option">
+        </div>
+      </div>
+    </main>
+    <footer class="modal-footer">
+      <button class="secondary-button" (click)="close.emit()">Cancel</button>
+      <button class="primary-button" [disabled]="!selectedAvatar" (click)="confirmSelection()">Save</button>
+    </footer>
+  </div>
+</div>
