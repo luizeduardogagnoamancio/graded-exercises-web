@@ -21,6 +21,7 @@ export class RegisterComponent {
   email: string = "";
   password: string = "";
   userRole: UserRoleEnum = UserRoleEnum.USER;
+  confirmPassword: string = '';
 
   registerData: RegisterRequestDto = {
       name: "",
