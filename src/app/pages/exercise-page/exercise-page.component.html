@@ -5,32 +5,55 @@
   <ng-container *ngIf="!isLoading && !error && chapterDetail">
     <header class="player-header">
       <h1>{{ chapterDetail.title }}</h1>
-      <button class="settings-button" (click)="openSettingsModal()" *ngIf="!isCompleted && availableFormats.length > 1">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <button
+        class="settings-button"
+        (click)="openSettingsModal()"
+        *ngIf="!isCompleted && availableFormats.length > 1"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
           <circle cx="12" cy="12" r="3"></circle>
-          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          <path
+            d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"
+          ></path>
         </svg>
       </button>
     </header>
 
     <div class="question-area" *ngIf="!isCompleted && currentQuestion">
       <div [ngSwitch]="selectedFormat">
-
-        <div *ngSwitchCase="'FILL_IN_THE_BLANK'" class="fill-in-the-blank-container">
+        <div
+          *ngSwitchCase="'FILL_IN_THE_BLANK'"
+          class="fill-in-the-blank-container"
+        >
           <span class="text-part">{{ currentFormatContent.textBefore }}</span>
           <input
             type="text"
             class="inline-answer-input"
             [(ngModel)]="userAnswer"
             [disabled]="feedback === 'correct'"
-            (keyup.enter)="feedback !== 'correct' ? checkAnswer() : nextQuestion()"
+            (keyup.enter)="
+              feedback !== 'correct' ? checkAnswer() : nextQuestion()
+            "
             autocomplete="off"
             autofocus
-          >
+          />
           <span class="text-part">{{ currentFormatContent.textAfter }}</span>
         </div>
 
-        <div *ngSwitchCase="'MULTIPLE_CHOICE'" class="multiple-choice-container">
+        <div
+          *ngSwitchCase="'MULTIPLE_CHOICE'"
+          class="multiple-choice-container"
+        >
           <p class="question-text">{{ currentFormatContent.question }}</p>
           <div class="options-grid">
             <button
@@ -50,10 +73,14 @@
             <button
               *ngFor="let word of scrambleAnswer; let i = index"
               class="scramble-word-button"
-              (click)="returnScrambleWord(word, i)">
+              (click)="returnScrambleWord(word, i)"
+            >
               {{ word }}
             </button>
-            <div *ngIf="scrambleAnswer.length === 0" class="scramble-placeholder">
+            <div
+              *ngIf="scrambleAnswer.length === 0"
+              class="scramble-placeholder"
+            >
               Click the words below to form the sentence
             </div>
           </div>
@@ -62,43 +89,93 @@
             <button
               *ngFor="let word of scrambleOptions; let i = index"
               class="scramble-word-button"
-              (click)="selectScrambleWord(word, i)">
+              (click)="selectScrambleWord(word, i)"
+            >
               {{ word }}
             </button>
           </div>
         </div>
-
       </div>
-      <div class="feedback-area" [ngClass]="feedback" *ngIf="feedback !== 'none'">
+      <div
+        class="feedback-area"
+        [ngClass]="feedback"
+        *ngIf="feedback !== 'none'"
+      >
         <span *ngIf="feedback === 'correct'"><strong>Correct!</strong></span>
-        <span *ngIf="feedback === 'incorrect'"><strong>Incorrect.</strong> Please try again.</span>
-        <span *ngIf="answerRevealed && currentFormatContent.correctAnswer">The correct answer is: <strong>{{ currentFormatContent.correctAnswer }}</strong></span>
+        <span *ngIf="feedback === 'incorrect'"
+          ><strong>Incorrect.</strong> Please try again.</span
+        >
+        <span *ngIf="answerRevealed && currentFormatContent.correctAnswer"
+          >The correct answer is:
+          <strong>{{ currentFormatContent.correctAnswer }}</strong></span
+        >
       </div>
       <div class="action-buttons">
-        <button class="check-button" (click)="checkAnswer()" *ngIf="feedback !== 'correct'">Check</button>
-        <button class="show-answer-button" (click)="showAnswer()" *ngIf="feedback === 'incorrect'">Show Answer</button>
-        <button class="next-button" (click)="nextQuestion()" *ngIf="feedback === 'correct'">Continue</button>
+        <button
+          class="check-button"
+          (click)="checkAnswer()"
+          *ngIf="feedback !== 'correct'"
+        >
+          Check
+        </button>
+        <button
+          class="show-answer-button"
+          (click)="showAnswer()"
+          *ngIf="feedback === 'incorrect'"
+        >
+          Show Answer
+        </button>
+        <button
+          class="next-button"
+          (click)="nextQuestion()"
+          *ngIf="feedback === 'correct'"
+        >
+          Continue
+        </button>
       </div>
     </div>
 
     <div class="completion-area" *ngIf="isCompleted">
-      <div class="completion-icon">??</div>
+      <div class="completion-icon">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="64"
+          height="64"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="#2ecc71"
+          stroke-width="3"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+      </div>
       <h2>Chapter Complete!</h2>
       <p class="summary-text">
-        You got <strong>{{ correctAnswersCount }}</strong> of <strong>{{ chapterDetail.questions.length }}</strong> questions right.
+        You got <strong>{{ correctAnswersCount }}</strong> of
+        <strong>{{ chapterDetail.questions.length }}</strong> questions right.
       </p>
       <div class="completion-actions">
-        <button class="restart-button" (click)="restartExercise()">Try Again</button>
+        <button class="restart-button" (click)="restartExercise()">
+          Try Again
+        </button>
         <a routerLink="/exercises" class="back-button">Next Chapter</a>
       </div>
     </div>
   </ng-container>
 
-  <div class="modal-overlay" *ngIf="isSettingsModalVisible" (click)="closeSettingsModal()">
+  <div
+    class="modal-overlay"
+    *ngIf="isSettingsModalVisible"
+    (click)="closeSettingsModal()"
+  >
     <div class="modal-content" (click)="$event.stopPropagation()">
       <header class="modal-header">
         <h2>Exercise Settings</h2>
-        <button class="close-button" (click)="closeSettingsModal()">&times;</button>
+        <button class="close-button" (click)="closeSettingsModal()">
+          &times;
+        </button>
       </header>
       <main class="modal-body">
         <p>Choose the question format:</p>
@@ -110,14 +187,18 @@
               [id]="'format-' + format"
               [value]="format"
               [(ngModel)]="tempSelectedFormat"
-            >
+            />
             <label [for]="'format-' + format">{{ format | titlecase }}</label>
           </div>
         </div>
       </main>
       <footer class="modal-footer">
-        <button class="secondary-button" (click)="closeSettingsModal()">Cancel</button>
-        <button class="primary-button" (click)="confirmSettings()">Apply</button>
+        <button class="secondary-button" (click)="closeSettingsModal()">
+          Cancel
+        </button>
+        <button class="primary-button" (click)="confirmSettings()">
+          Apply
+        </button>
       </footer>
     </div>
   </div>
