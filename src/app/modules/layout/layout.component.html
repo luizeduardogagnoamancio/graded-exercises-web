@@ -35,7 +35,7 @@
 
 
 <img
-            [src]="userAvatarUrl || 'assets/images/default-avatar.svg'"
+            [src]="userAvatarUrl || 'assets/images/default-avatar.png'"
 
 alt="User Profile"
             (click)="toggleProfileModal()"
@@ -60,7 +60,7 @@ alt="User Profile"
               <div class="avatar-container">
 
 
-<img [src]="userAvatarUrl || 'assets/images/default-avatar.svg'" appImageFallback alt="Avatar" class="avatar"/>
+<img [src]="userAvatarUrl || 'assets/images/default-avatar.png'" appImageFallback alt="Avatar" class="avatar"/>
               </div>
               <span class="user-email">{{ user.email }}</span>
             </div>
