@@ -114,7 +114,7 @@
         <button
           class="check-button"
           (click)="checkAnswer()"
-          *ngIf="feedback !== 'correct'"
+          *ngIf="feedback === 'none'"
         >
           Check
         </button>
@@ -128,7 +128,7 @@
         <button
           class="next-button"
           (click)="nextQuestion()"
-          *ngIf="feedback === 'correct'"
+          *ngIf="feedback !== 'none'"
         >
           Continue
         </button>

@@ -172,6 +172,15 @@ export class ExercisePageComponent implements OnInit {
           error: (err) => console.error('Failed to save progress:', err),
         });
     } else {
+      this.userAnswerService
+        .saveAnswer(this.currentQuestion.id, false, this.selectedFormat)
+        .subscribe({
+          next: () =>
+            console.log(
+              `Progress saved for question ${this.currentQuestion?.id}`
+            ),
+          error: (err) => console.error('Failed to save progress:', err),
+        });
       this.feedback = 'incorrect';
     }
   }
