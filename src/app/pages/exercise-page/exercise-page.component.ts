@@ -163,7 +163,7 @@ export class ExercisePageComponent implements OnInit {
       this.feedback = 'correct';
       this.correctAnswersCount++;
       this.userAnswerService
-        .saveAnswer(this.currentQuestion.id, true)
+        .saveAnswer(this.currentQuestion.id, true, this.selectedFormat)
         .subscribe({
           next: () =>
             console.log(

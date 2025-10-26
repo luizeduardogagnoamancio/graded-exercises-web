@@ -13,8 +13,8 @@ export class UserAnswerService {
     this.userAnswerUrl = `${this.configService.apiUrl}/user-answers`;
   }
 
-  saveAnswer(questionId: number, isCorrect: boolean): Observable<void> {
-    const payload = { questionId, isCorrect };
+  saveAnswer(questionId: number, isCorrect: boolean, chosenFormat: string): Observable<void> {
+    const payload = { questionId, isCorrect, chosenFormat};
     return this.http.post<void>(this.userAnswerUrl, payload);
   }
 
