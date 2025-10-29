@@ -119,13 +119,6 @@
           Check
         </button>
         <button
-          class="show-answer-button"
-          (click)="showAnswer()"
-          *ngIf="feedback === 'incorrect'"
-        >
-          Show Answer
-        </button>
-        <button
           class="next-button"
           (click)="nextQuestion()"
           *ngIf="feedback !== 'none'"
